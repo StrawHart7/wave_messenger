@@ -2,7 +2,7 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: repository initialized. No application code yet — the next step is Phase 1 of [docs/BUILD_SPEC.md](docs/BUILD_SPEC.md).
+> Status: repository initialized. No application code yet — next step is Phase 1 of [PLAN.md](PLAN.md).
 
 ## Stack
 
@@ -19,6 +19,7 @@ A production-grade mobile messenger (WhatsApp-class UX) built with React Native 
 ## Repository layout
 
 ```
+PLAN.md             8 phases, exit criteria per phase, risk register
 design-reference/   Stitch-generated screens: screen.png + code.html per screen
   tide_system/      DESIGN.md — the design system (tokens, type, spacing, components)
 docs/
