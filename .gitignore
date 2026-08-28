@@ -51,3 +51,7 @@ Thumbs.db
 
 # Build verification output (screenshots taken during the iteration loop)
 screenshots/
+
+# scaffold logs
+install.log
+deps*.log

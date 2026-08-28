@@ -2,7 +2,7 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: repository initialized. No application code yet — next step is Phase 1 of [PLAN.md](PLAN.md).
+> Status: **Phase 1 (foundation)** — Expo Router shell, theme system and UI primitives. Phases 2-8 in [PLAN.md](PLAN.md).
 
 ## Stack
 
@@ -19,6 +19,10 @@ A production-grade mobile messenger (WhatsApp-class UX) built with React Native 
 ## Repository layout
 
 ```
+app/                Expo Router — (tabs)/ for now, more per phase
+components/ui/      primitives: Text, Avatar, Badge, Pill, ListRow, Ticks, Screen
+theme/              tokens.ts (mirrors DESIGN.md), fonts.ts, ThemeProvider
+services/           storage.ts (driver seam), Supabase and sync land in phase 2-3
 PLAN.md             8 phases, exit criteria per phase, risk register
 design-reference/   Stitch-generated screens: screen.png + code.html per screen
   tide_system/      DESIGN.md — the design system (tokens, type, spacing, components)
@@ -44,10 +48,13 @@ type Be Vietnam Pro.
 ```bash
 npm install
 cp .env.example .env   # fill in EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY
+npm run verify         # typecheck + lint + tests
 npx expo start
 ```
 
-A development build is required (not Expo Go) — `react-native-webrtc` and MMKV need native modules.
+**No builds.** EAS builds, `expo run:*` and `expo prebuild` are off the table while the project
+is in test mode. Anything needing a native module (MMKV, WebRTC) sits behind a driver seam —
+see `services/storage.ts` — so it can be swapped in when a development build exists.
 
 ## Scope
 

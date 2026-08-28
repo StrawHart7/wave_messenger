@@ -46,7 +46,13 @@ Expo + TypeScript strict + Expo Router skeleton, dev client build (WebRTC and MM
 - Bottom tab bar with the four tabs, correct active/inactive treatment, empty placeholder screens.
 - ESLint + Prettier + `tsc --noEmit` + Jest wired into `npm run verify`.
 
-**Exit:** app boots on iOS and Android simulators, both themes toggle cleanly, tab bar matches `design-reference/chat_list_light/screen.png` chrome, `npm run verify` green.
+**Exit:** `npm run verify` green (typecheck + lint + 10 tests), theme resolves both schemes and
+persists a preference, tab bar and app bar built from tokens.
+
+> **Done, with one criterion outstanding.** The original exit criterion "boots on iOS and Android
+> simulators" is unmet: the project is in no-build mode, so nothing has been run on a device or
+> simulator yet. Everything else is verified. Carry this forward — the first `expo start` will
+> surface runtime issues (font loading, Reanimated plugin, router entry) that static checks cannot.
 
 ## Phase 2 — Backend & auth
 

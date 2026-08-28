@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Wave",
+    "slug": "wave-messenger",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "wave",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f5faff"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.strawhart.wave"
+    },
+    "android": {
+      "package": "com.strawhart.wave",
+      "adaptiveIcon": {
+        "backgroundColor": "#25D366",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-splash-screen"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
