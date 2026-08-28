@@ -12,11 +12,19 @@ export function Screen({
   title,
   leading,
   trailing,
+  titleTint,
+  barHeight,
+  separator = true,
   children,
 }: {
   title: string;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
+  /** Tab screens title in accent green; the auth flow uses primary text. */
+  titleTint?: string;
+  /** 60px on tab screens, 72px (list-item-height) in the auth flow. */
+  barHeight?: number;
+  separator?: boolean;
   children?: React.ReactNode;
 }) {
   const { colors, spacing } = useTheme();
@@ -25,20 +33,20 @@ export function Screen({
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: colors.tide.background }}>
       <View
         style={{
-          height: spacing.appBarHeight,
+          height: barHeight ?? spacing.appBarHeight,
           paddingHorizontal: spacing.edgeMargin,
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          borderBottomWidth: 1,
+          borderBottomWidth: separator ? 1 : 0,
           borderBottomColor: colors.messaging.separator,
         }}
       >
-        <View style={{ width: spacing.avatarLg, alignItems: 'flex-start' }}>{leading}</View>
-        <Text variant="navTitle" tint={colors.tide.primary}>
+        <View style={{ width: spacing.avatarXl / 1.5, alignItems: 'flex-start' }}>{leading}</View>
+        <Text variant="navTitle" tint={titleTint ?? colors.tide.primary}>
           {title}
         </Text>
-        <View style={{ width: spacing.avatarLg, alignItems: 'flex-end' }}>{trailing}</View>
+        <View style={{ width: spacing.avatarXl / 1.5, alignItems: 'flex-end' }}>{trailing}</View>
       </View>
 
       <View style={{ flex: 1 }}>{children}</View>

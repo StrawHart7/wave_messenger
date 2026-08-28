@@ -64,6 +64,19 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** two real accounts register on two devices, land on an empty Chats tab, and survive an app restart without re-authenticating. RLS verified by attempting a cross-account read and getting zero rows.
 
+> **Code complete, verification outstanding.** Everything above is written and passes
+> `npm run verify` (32 tests). Nothing has been run against a live Supabase project — no
+> credentials yet — so the migrations are unapplied and no account has ever signed in. To close
+> this phase: create the project, put the URL and anon key in `.env`, apply
+> `supabase/migrations/`, enable phone auth with an SMS provider, then register two accounts and
+> attempt a cross-account read.
+>
+> Deviations from the plan, both deliberate:
+> - Session persistence uses the `services/storage.ts` seam (AsyncStorage today), not MMKV — no
+>   dev build. Supabase's auth-storage contract matches the seam exactly.
+> - Contact sync ships as two modules: pure normalisation in `services/contacts.ts`, device and
+>   network work in `services/contactSync.ts`. Native imports cannot be unit-tested.
+
 ## Phase 3 — Messaging core *(the phase that decides whether this app feels real)*
 
 - SQLite schema + query layer + reactive subscriptions feeding FlashList.

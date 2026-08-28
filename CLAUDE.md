@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phase 1 (foundation) is in place**: Expo Router shell, the theme system, and the UI primitives. Phase 2 (Supabase schema + auth) is next — see `PLAN.md`.
+Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-2 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth, the three onboarding screens and the routing guard. Phase 3 (messaging core) is next — see `PLAN.md`.
 
 Read before doing anything:
 
@@ -40,21 +40,32 @@ Corollaries:
 Present today:
 
 ```
-app/            _layout.tsx (fonts + providers), (tabs)/ with four stub screens
-components/ui/  Text, Avatar, Badge, Pill, ListRow, Ticks, Screen — plus the barrel
-theme/          tokens.ts, fontFamilies.ts, fonts.ts, ThemeProvider.tsx
-services/       storage.ts (driver seam)
+app/                 _layout.tsx (fonts, providers, AuthGate)
+  (auth)/            phone, otp, profile-setup
+  (tabs)/            four stub screens
+components/ui/       Text, Avatar, Badge, Pill, ListRow, Ticks, TextField, OtpInput, Screen
+components/auth/     AuthGate (routing guard), CountryPicker
+theme/               tokens.ts, fontFamilies.ts, fonts.ts, ThemeProvider.tsx
+services/            storage.ts (driver seam), supabase.ts, auth.ts, phone.ts,
+                     contacts.ts (pure), contactSync.ts (native), media.ts
+stores/              session.ts (Zustand)
+supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies)
 ```
 
-Arriving in later phases: `app/(auth)/`, `app/chat/[id]`, `app/status/[userId]`, `app/call/[id]`,
-`app/settings/`, `components/chat/`, `db/` (SQLite), `services/realtime|sync|media`, `stores/`
-(Zustand), `supabase/migrations/`.
+Arriving in later phases: `app/chat/[id]`, `app/status/[userId]`, `app/call/[id]`,
+`app/settings/`, `components/chat/`, `db/` (SQLite), `services/realtime|sync/`.
 
-Two conventions worth knowing before writing a component:
+Conventions worth knowing before writing code here:
 - `components/ui/Text` takes `variant` (type role) and `tint` (color) — **not** `role`/`color`,
   which collide with React Native's ARIA props and silently resolve to `never`.
 - `theme/fontFamilies.ts` holds family *names*; `theme/fonts.ts` holds the *binaries* and is
   imported only by the root layout. Keep that split or every test drags .ttf files in.
+- **Native imports poison tests.** A module that imports `expo-contacts`, `expo-crypto` or any
+  other native module cannot be unit-tested under jest-expo. Pure rules go in their own module
+  (`services/phone.ts`, `services/contacts.ts`); the native side sits next to it
+  (`services/contactSync.ts`). Follow that split for every new service.
+- The client reads the `public_profiles` view, never the `profiles` table: the privacy settings
+  are applied inside the view, so a hidden avatar or last-seen is null before it leaves Postgres.
 
 ## Stack (fixed — do not substitute)
 

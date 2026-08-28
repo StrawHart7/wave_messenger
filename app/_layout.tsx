@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AuthGate } from '../components/auth/AuthGate';
 import { fontAssets } from '../theme/fonts';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
 
@@ -17,12 +18,14 @@ function RootStack() {
   return (
     <>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: colors.tide.background },
-        }}
-      />
+      <AuthGate>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.tide.background },
+          }}
+        />
+      </AuthGate>
     </>
   );
 }

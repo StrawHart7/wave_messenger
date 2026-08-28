@@ -2,7 +2,8 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phase 1 (foundation)** — Expo Router shell, theme system and UI primitives. Phases 2-8 in [PLAN.md](PLAN.md).
+> Status: **Phases 1-2** — Expo Router shell, theme system, UI primitives; Supabase schema with
+> RLS, phone-OTP auth and onboarding. Phases 3-8 in [PLAN.md](PLAN.md).
 
 ## Stack
 
@@ -19,10 +20,12 @@ A production-grade mobile messenger (WhatsApp-class UX) built with React Native 
 ## Repository layout
 
 ```
-app/                Expo Router — (tabs)/ for now, more per phase
-components/ui/      primitives: Text, Avatar, Badge, Pill, ListRow, Ticks, Screen
+app/                Expo Router — (auth)/ and (tabs)/, more per phase
+components/         ui/ primitives and auth/ (routing guard, country picker)
 theme/              tokens.ts (mirrors DESIGN.md), fonts.ts, ThemeProvider
-services/           storage.ts (driver seam), Supabase and sync land in phase 2-3
+services/           supabase, auth, phone, contacts, media, storage seam
+stores/             session (Zustand)
+supabase/migrations/  schema + RLS, storage buckets + policies
 PLAN.md             8 phases, exit criteria per phase, risk register
 design-reference/   Stitch-generated screens: screen.png + code.html per screen
   tide_system/      DESIGN.md — the design system (tokens, type, spacing, components)
@@ -51,6 +54,19 @@ cp .env.example .env   # fill in EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABA
 npm run verify         # typecheck + lint + tests
 npx expo start
 ```
+
+### Supabase
+
+Create a project, then apply the migrations in order (SQL editor, or `supabase db push`):
+
+```
+supabase/migrations/0001_init.sql     tables, RLS policies, public_profiles view, triggers
+supabase/migrations/0002_storage.sql  avatars / media / status buckets and their policies
+```
+
+Then enable **Phone** auth with an SMS provider. The app runs without credentials — it shows the
+auth flow and reports a clear error on submit — so the project stays developable before the
+backend exists.
 
 **No builds.** EAS builds, `expo run:*` and `expo prebuild` are off the table while the project
 is in test mode. Anything needing a native module (MMKV, WebRTC) sits behind a driver seam —
