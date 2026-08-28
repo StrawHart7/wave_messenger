@@ -26,6 +26,8 @@ Assume I will create the Supabase project and put `EXPO_PUBLIC_SUPABASE_URL` and
 
 ## Visual specification — treat these as exact values
 
+**Source of truth: `design-reference/`.** `design-reference/tide_system/DESIGN.md` holds the full token set (colors, type scale, spacing, shape, component rules) — read it before writing `theme/tokens.ts`. Each `design-reference/<screen>/` holds a `screen.png` and the `code.html` that produced it. The values below are a summary; where they differ from the reference, the reference wins.
+
 WhatsApp 2025+ look, both themes fully implemented, system-following with a manual override in Settings.
 
 **Light**
@@ -42,13 +44,13 @@ WhatsApp 2025+ look, both themes fully implemented, system-following with a manu
 * Chat wallpaper: `#0B141A` with the doodle pattern at ~4% opacity
 
 **Geometry & type**
-* Bubbles: `7.5px` radius, `2px` on the tail corner of a grouped run; max width 75% of screen; padding `6px 9px 8px`; `2px` vertical gap inside a run, `8px` between runs from different senders
-* Message text 16px/21px; timestamp 11px; chat-list title 17px semibold; preview 14.5px `#667781`
-* Avatars: 49px in the chat list, 40px in group message rows, 32px in headers
+* Bubbles: `7.5px` radius, `2px` on the tail corner of a grouped run; max width 75% of screen; padding `8px 12px`; `4px` vertical gap inside a run, `8px` between runs from different senders
+* Message body 15px/20px regular; timestamp 11px/14px; chat-list name 16px/20px medium; nav title 17px/22px semibold; section header 13px/18px; button text 14px/18px semibold
+* Avatars: 48px in the chat list, 40px in group message rows, 32px in headers, 96px on info screens; chat-list rows are 72px tall; edge margin 16px on a 4/8px baseline grid
 * List-row separators inset to start at the text, never at the screen edge
 * Tick states inside the bubble, right of the timestamp: clock (pending) → single grey `#667781` (sent) → double grey (delivered) → double blue `#53BDEB` (read)
 * Bottom tab bar with Chats / Updates / Communities / Calls; active pill behind the icon on Android
-* Fonts: SF Pro on iOS, Roboto on Android — system default, do not bundle a custom font
+* Font: **Be Vietnam Pro** (via `expo-font`/`@expo-google-fonts/be-vietnam-pro`), weights 400/500/600 only
 
 **NOT** a generic Material chat template. **NOT** rounded-20px iMessage bubbles. **NOT** a purple or blue accent anywhere. **NOT** centered headers on Android. **NOT** an app that only looks right in light mode.
 
@@ -86,7 +88,7 @@ Adapt where a detail doesn't map cleanly onto Expo, but never silently drop an i
 
 1. **Phase the work** and finish phases in order. After each, the app must run and be verifiable: (1) project + navigation + theme tokens, (2) auth + profile, (3) chat list + conversation with real messaging, (4) media + voice notes, (5) groups + info screens, (6) Status/Updates, (7) calls, (8) settings + privacy enforcement + polish pass
 2. **Extract design tokens once**, in `theme/tokens.ts`, from the hex values above. Never hardcode a color, radius, or spacing value in a component. If you catch yourself typing `#25D366` outside that file, stop and fix the token
-3. **Run and look, every phase.** Start the app (`npx expo start`, iOS simulator preferred), navigate to what you just built, take screenshots. Compare them against the spec above and against any real WhatsApp screenshots I have put in `assets/reference/`. Then: list every visual difference you can see → fix them → screenshot again → compare again → repeat. Be strict about small things: bubble tail shape, tick color and size, header height, avatar diameter, the exact grey of a timestamp, separator inset
+3. **Run and look, every phase.** Start the app (`npx expo start`, iOS simulator preferred), navigate to what you just built, take screenshots. Compare them against `design-reference/<screen>/screen.png` — the Stitch reference set is the visual source of truth and outranks this document wherever they disagree. Each folder also has a `code.html` you can read for exact structure and values. Then: list every visual difference you can see → fix them → screenshot again → compare again → repeat. Be strict about small things: bubble tail shape, tick color and size, header height, avatar diameter, the exact grey of a timestamp, separator inset
 4. **Verify behavior, not just pixels.** For messaging, prove it: run two sessions (simulator plus a second device or browser session), send a message, and show me it arriving live, the ticks turning blue, and the typing indicator firing — screenshots or a log of the realtime events
 5. **Write tests where they pay**: message-state reducer, optimistic-send reconciliation, offline queue, receipt logic, date grouping. Run them; never leave a failing test behind
 6. **When something is ambiguous**, pick the behavior real WhatsApp has, note it in one line as an ASSUMPTION, and keep moving. Do not stop to ask me about details you can decide
