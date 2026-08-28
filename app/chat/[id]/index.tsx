@@ -43,7 +43,10 @@ import { NO_WEBRTC_MESSAGE, isWebrtcAvailable } from '../../../services/webrtc';
 import { pullMessages } from '../../../services/sync/bootstrap';
 import { draftMessage, enqueue } from '../../../services/sync/outbox';
 import { compressImage, sendMedia } from '../../../services/sync/uploads';
+import { peerPrivacy } from '../../../db/blocks';
+import { showsTypingFrom, wallpaperFor } from '../../../services/settings';
 import { useSession } from '../../../stores/session';
+import { useSettings } from '../../../stores/settings';
 import { useTheme } from '../../../theme/ThemeProvider';
 
 const wallpaperTile = require('../../../assets/chat-wallpaper-tile.png');
@@ -61,6 +64,15 @@ export default function ConversationScreen() {
   const { items, loadOlder, hasMore } = useConversation(chatId, viewerId, isGroup);
   const members = useMembers(chatId, viewerId);
   const recorder = useVoiceRecorder();
+
+  const chatPrefs = useSettings((s) => s.chat);
+  const typingEnabled = useSettings((s) => s.privacy.typingIndicators);
+
+  const wallpaper = wallpaperFor(chatPrefs.wallpaper);
+  const wallpaperTint =
+    wallpaper.tintIndex === null
+      ? colors.messaging.wallpaper
+      : (colors.messaging.statusBackgrounds[wallpaper.tintIndex] ?? colors.messaging.wallpaper);
 
   const [draft, setDraft] = useState('');
   const [replyTo, setReplyTo] = useState<LocalMessage | null>(null);
@@ -92,13 +104,13 @@ export default function ConversationScreen() {
 
   useEffect(() => {
     if (!chatId || !viewerId) return;
-    const channel = subscribeToChatPresence(chatId, viewerId, setPresence);
+    const channel = subscribeToChatPresence(chatId, viewerId, setPresence, { typingEnabled });
     typingRef.current = channel.setTyping;
     return () => {
       typingRef.current = null;
       channel.stop();
     };
-  }, [chatId, viewerId]);
+  }, [chatId, viewerId, typingEnabled]);
 
   const send = useCallback(() => {
     const body = draft.trim();
@@ -241,7 +253,15 @@ export default function ConversationScreen() {
 
   // Typing ids become names through the same profile cache the bubbles read.
   const typingProfiles = useLiveQuery(() => displayNames(presence.typing), [presence.typing]);
-  const typingNames = presence.typing
+
+  // Reciprocity, the receiving half: someone who has typing indicators off does
+  // not get to see them. Their own client already stops broadcasting — this is the
+  // belt to that pair of braces, and the reason the setting is worth trusting.
+  const typingUsers = useLiveQuery(
+    () => presence.typing.filter((userId) => showsTypingFrom(typingEnabled, peerPrivacy(userId).typingIndicators)),
+    [presence.typing, typingEnabled],
+  );
+  const typingNames = typingUsers
     .map((userId) => typingProfiles.get(userId)?.displayName ?? '')
     .filter((name) => name.length > 0);
 
@@ -289,7 +309,7 @@ export default function ConversationScreen() {
   const subtitle = isGroup
     ? groupSubtitle({ typingNames, memberLine: headerMemberLine(members, viewerId) })
     : presenceLabel({
-        typing: presence.typing.length > 0,
+        typing: typingUsers.length > 0,
         online: presence.online.some((userId) => userId !== viewerId),
         lastSeenAt: null,
       });
@@ -426,10 +446,11 @@ export default function ConversationScreen() {
         </Pressable>
       </View>
 
+      {/* A chosen wallpaper is a flat tint; the default is the repeating tile. */}
       <ImageBackground
-        source={wallpaperTile}
+        source={wallpaper.tintIndex === null ? wallpaperTile : undefined}
         resizeMode="repeat"
-        style={{ flex: 1, backgroundColor: colors.messaging.wallpaper }}
+        style={{ flex: 1, backgroundColor: wallpaperTint }}
       >
         <FlashList
           ref={listRef}
@@ -451,14 +472,14 @@ export default function ConversationScreen() {
           }}
           contentContainerStyle={{ paddingVertical: spacing.stackMd }}
           ListFooterComponent={
-            presence.typing.length > 0 && isGroup ? (
+            typingUsers.length > 0 && isGroup ? (
               <TypingBubble
                 name={typingNames[0] ?? ''}
                 avatarPath={
-                  members.find((member) => member.userId === presence.typing[0])?.avatarPath ?? null
+                  members.find((member) => member.userId === typingUsers[0])?.avatarPath ?? null
                 }
               />
-            ) : presence.typing.length > 0 ? (
+            ) : typingUsers.length > 0 ? (
               <TypingBubble />
             ) : null
           }
@@ -570,6 +591,7 @@ export default function ConversationScreen() {
             typingRef.current?.();
           }}
           onSend={send}
+          enterToSend={chatPrefs.enterToSend}
           onAttach={() => setSheetOpen(true)}
           onCamera={() => void attach('camera')}
           onMic={() => void startRecording()}

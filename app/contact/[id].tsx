@@ -15,9 +15,11 @@ import { InfoRow, InfoSection, QuickActions } from '../../components/group/InfoS
 import { placeCall } from '../../services/callFlow';
 import type { CallKind } from '../../services/calls';
 import { findOrCreateDirectChat } from '../../services/chatSync';
+import { blockUser, unblockUser } from '../../services/privacySync';
 import { NO_WEBRTC_MESSAGE, isWebrtcAvailable } from '../../services/webrtc';
 import { useSession } from '../../stores/session';
 import { Avatar, Text } from '../../components/ui';
+import { isBlocked } from '../../db/blocks';
 import { getProfile } from '../../db/profiles';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
 import { formatE164ForDisplay } from '../../services/phone';
@@ -41,6 +43,7 @@ export default function ContactInfoScreen() {
   const profile = useLiveQuery(() => getProfile(userId), [userId]);
   const viewerId = useSession((s) => s.userId) ?? '';
   const me = useSession((s) => s.profile);
+  const blocked = useLiveQuery(() => isBlocked(userId), [userId]);
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
@@ -102,6 +105,31 @@ export default function ContactInfoScreen() {
     },
     [userId, viewerId, profile, me],
   );
+
+  const toggleBlock = useCallback(() => {
+    const action = blocked ? 'Unblock' : 'Block';
+    const label = profile?.displayName ?? 'this contact';
+
+    Alert.alert(
+      `${action} ${label}`,
+      blocked
+        ? 'They will be able to message and call you again.'
+        : 'They will not be able to message or call you, and will not see your photo, about or last seen. They are not told.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: action,
+          style: blocked ? 'default' : 'destructive',
+          onPress: () => {
+            const run = blocked ? unblockUser : blockUser;
+            void run(viewerId, userId).catch(() =>
+              Alert.alert('Not saved', 'Check your connection and try again.'),
+            );
+          },
+        },
+      ],
+    );
+  }, [blocked, profile?.displayName, viewerId, userId]);
 
   const name = profile?.displayName ?? '';
   const status = presenceLabel({
@@ -202,15 +230,15 @@ export default function ContactInfoScreen() {
         </InfoSection>
 
         <InfoSection>
-          {/* Blocking is a privacy rule, and a privacy rule that only exists on this
-              device is theatre. It lands with the rest of them in phase 8. */}
+          {/* Enforced in 0006_privacy.sql, not here: a blocked person cannot insert
+              a message, and the profile view stops serving them your photo, about
+              and last seen. A block that only existed on this device would be
+              theatre — which is why this row did nothing until the rule existed. */}
           <InfoRow
             icon="block"
-            label={`Block ${name}`}
+            label={blocked ? `Unblock ${name}` : `Block ${name}`}
             tint={colors.tide.error}
-            onPress={() =>
-              Alert.alert('Not yet', 'Blocking arrives with the privacy settings in a later phase.')
-            }
+            onPress={toggleBlock}
           />
           <InfoRow icon="thumb-down" label={`Report ${name}`} tint={colors.tide.error} />
         </InfoSection>

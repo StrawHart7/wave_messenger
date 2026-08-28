@@ -148,11 +148,16 @@ export function upsertProfile(profile: {
   phone?: string | null;
   isOnline?: boolean;
   lastSeenAt?: number | null;
+  /** The peer's own privacy toggles, which drive reciprocity locally. */
+  readReceipts?: boolean;
+  typingIndicators?: boolean;
 }): void {
   mutate(() => {
     db().runSync(
-      `insert into profiles (id, display_name, avatar_path, about, phone, is_online, last_seen_at)
-       values (?, ?, ?, ?, ?, ?, ?)
+      `insert into profiles
+         (id, display_name, avatar_path, about, phone, is_online, last_seen_at,
+          read_receipts_enabled, typing_indicators_enabled)
+       values (?, ?, ?, ?, ?, ?, ?, ?, ?)
        on conflict (id) do update set
          display_name = excluded.display_name,
          avatar_path = coalesce(excluded.avatar_path, profiles.avatar_path),
@@ -161,7 +166,9 @@ export function upsertProfile(profile: {
          about = coalesce(excluded.about, profiles.about),
          phone = coalesce(excluded.phone, profiles.phone),
          is_online = excluded.is_online,
-         last_seen_at = coalesce(excluded.last_seen_at, profiles.last_seen_at)`,
+         last_seen_at = coalesce(excluded.last_seen_at, profiles.last_seen_at),
+         read_receipts_enabled = excluded.read_receipts_enabled,
+         typing_indicators_enabled = excluded.typing_indicators_enabled`,
       [
         profile.id,
         profile.displayName,
@@ -170,6 +177,8 @@ export function upsertProfile(profile: {
         profile.phone ?? null,
         profile.isOnline ? 1 : 0,
         profile.lastSeenAt ?? null,
+        (profile.readReceipts ?? true) ? 1 : 0,
+        (profile.typingIndicators ?? true) ? 1 : 0,
       ],
     );
   });

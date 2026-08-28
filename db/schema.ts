@@ -7,7 +7,7 @@
  * locally before the server has ever seen it.
  */
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 export const MIGRATIONS: string[] = [
   // v1 — chats, messages, receipts and the local profile cache.
@@ -176,5 +176,17 @@ export const MIGRATIONS: string[] = [
   );
 
   create index if not exists calls_started_idx on calls (started_at desc);
+  `,
+
+  // v6 — privacy. The peer's own toggles are cached so reciprocity can be applied
+  // to a broadcast payload, which cannot be filtered per-subscriber server-side.
+  `
+  alter table profiles add column read_receipts_enabled integer not null default 1;
+  alter table profiles add column typing_indicators_enabled integer not null default 1;
+
+  create table if not exists blocks (
+    user_id text primary key,
+    created_at integer not null
+  );
   `,
 ];

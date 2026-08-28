@@ -2,12 +2,16 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phases 1-7** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
-> and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime; media,
-> voice notes, reactions and replies; groups with server-enforced admin permissions and the info
-> screens; status with its composer, full-screen viewer and 24-hour lifetime; 1:1 voice and video
-> calls over WebRTC with history. Calls need a development build — the WebRTC module is native and
-> is absent from Expo Go. Phase 8 in [PLAN.md](PLAN.md).
+> Status: **All eight phases are code-complete, and none has been run.** Theme system and
+> primitives; Supabase schema with RLS, phone-OTP auth and onboarding; SQLite store, chat list,
+> conversation, optimistic outbox and realtime; media, voice notes, reactions and replies; groups
+> with server-enforced admin permissions; status with a 24-hour lifetime; 1:1 WebRTC calls; and
+> the settings tree with privacy enforced in Postgres, blocking, wallpapers and storage usage.
+>
+> **Nothing here has executed** — there is no Supabase project, the six migrations are unapplied,
+> and no screen has rendered. `npm run verify` (typecheck, lint, 232 tests) is the only thing that
+> has passed. [docs/DEVIATIONS.md](docs/DEVIATIONS.md) is the full honest list; read it before
+> assuming a gap is a bug.
 
 ## Stack
 
@@ -34,7 +38,8 @@ services/           supabase, auth, phone, contacts, media, storage seam, messag
                     grouping, chatList, attachments, waveform, reactions, realtime/, sync/
 stores/             session (Zustand)
 supabase/migrations/  schema + RLS, storage buckets + policies
-PLAN.md             8 phases, exit criteria per phase, risk register
+PLAN.md             8 phases, exit criteria per phase, what each left unverified
+docs/DEVIATIONS.md  Everything deliberately skipped or approximated, and why
 design-reference/   Stitch-generated screens: screen.png + code.html per screen
   tide_system/      DESIGN.md — the design system (tokens, type, spacing, components)
 docs/

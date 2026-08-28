@@ -22,11 +22,24 @@ export type ChatPresence = {
 
 type TypingEvent = { userId: string; at: number };
 
+/**
+ * `typingEnabled` is the viewer's own setting, and it gates the *outgoing*
+ * broadcast, not just the incoming display.
+ *
+ * That distinction is the whole enforcement story for typing. A broadcast payload
+ * cannot be filtered per-subscriber the way a table row can — there is no RLS on a
+ * channel message — so "nobody sees me typing" can only be true if nothing is sent.
+ * Hiding it on the receiving end would leave the signal on the wire, which is
+ * exactly the kind of privacy setting this project refuses to ship.
+ */
 export function subscribeToChatPresence(
   chatId: string,
   viewerId: string,
   onChange: (presence: ChatPresence) => void,
+  options: { typingEnabled?: boolean } = {},
 ): { stop: () => void; setTyping: () => void } {
+  const typingEnabled = options.typingEnabled ?? true;
+
   if (!isSupabaseConfigured) {
     return { stop: () => {}, setTyping: () => {} };
   }
@@ -41,10 +54,12 @@ export function subscribeToChatPresence(
 
   const emit = () => {
     const now = Date.now();
-    const typing = [...typingAt.entries()]
-      .filter(([, at]) => now - at < TYPING_TTL_MS)
-      .map(([userId]) => userId)
-      .filter((userId) => userId !== viewerId);
+    const typing = typingEnabled
+      ? [...typingAt.entries()]
+          .filter(([, at]) => now - at < TYPING_TTL_MS)
+          .map(([userId]) => userId)
+          .filter((userId) => userId !== viewerId)
+      : [];
 
     const online = Object.keys(channel.presenceState());
     onChange({ typing, online });
@@ -72,6 +87,10 @@ export function subscribeToChatPresence(
       void supabase.removeChannel(channel);
     },
     setTyping: () => {
+      // Reciprocity, and the reason it is enforced here: with the setting off,
+      // nothing leaves this device.
+      if (!typingEnabled) return;
+
       const now = Date.now();
       if (now - lastSent < TYPING_THROTTLE_MS) return;
       lastSent = now;

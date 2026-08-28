@@ -6,7 +6,9 @@ import { subscribeToStatus } from '../services/realtime/status';
 import { pullChats } from '../services/sync/bootstrap';
 import { resumeOutbox } from '../services/sync/outbox';
 import { pullStatus } from '../services/statusSync';
+import { pullBlocked, updatePresence } from '../services/privacySync';
 import { useSession } from '../stores/session';
+import { useSettings } from '../stores/settings';
 import { useIncomingCalls } from './useCalls';
 
 /**
@@ -31,13 +33,21 @@ export function useAppSync(): void {
     // Catch up on what happened while the app was closed, then stay subscribed.
     void pullChats(viewerId).catch(() => {});
     void pullStatus(viewerId).catch(() => {});
+    void pullBlocked().catch(() => {});
+    void useSettings.getState().load(viewerId).catch(() => {});
     resumeOutbox(viewerId);
+
+    // Presence is written here and cleared on teardown. The trigger in 0006
+    // refuses to store it at all when the user's own setting is `nobody`, so a
+    // client that ignored the setting would still publish nothing.
+    void updatePresence(viewerId, true).catch(() => {});
 
     const stopMessages = subscribeToMessages(viewerId);
     const stopMembership = subscribeToMembership(viewerId);
     const stopStatus = subscribeToStatus(viewerId);
 
     return () => {
+      void updatePresence(viewerId, false).catch(() => {});
       stopMessages();
       stopMembership();
       stopStatus();

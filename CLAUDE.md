@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-7 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet; groups, membership, admin permissions and the info screens; status with its composer, full-screen viewer and 24-hour lifetime; 1:1 voice and video calls over WebRTC with history. Phase 8 (settings, privacy and polish) is next — see `PLAN.md`.
+Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **All eight phases are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet; groups, membership, admin permissions and the info screens; status with its composer, full-screen viewer and 24-hour lifetime; 1:1 voice and video calls over WebRTC with history; the settings tree with privacy enforced server-side, blocking, wallpapers and storage usage. **Nothing has ever been run** — see `docs/DEVIATIONS.md` for the full list of what is unverified, skipped or approximated.
 
 Read before doing anything:
 
 | File | Role |
 |---|---|
-| `PLAN.md` | 8 phases with exit criteria. Work is sequential — do not start phase N+1 until phase N's exit criteria are demonstrably met |
+| `PLAN.md` | 8 phases with exit criteria, each annotated with what was left unverified |
+| `docs/DEVIATIONS.md` | Everything deliberately skipped or approximated, and why. Read this before assuming a gap is a bug |
 | `docs/BUILD_SPEC.md` | What to build, the verification loop, and the closed out-of-scope list |
 | `design-reference/tide_system/DESIGN.md` | The design system — colors, type roles, spacing, shape, component rules |
 | `design-reference/<screen>/` | `screen.png` (the visual target) + `code.html` (exact structure and values) for 22 screens |
@@ -47,6 +48,7 @@ app/                 _layout.tsx (fonts, providers, AuthGate, useAppSync)
   contact/[id].tsx   contact info, collapsing hero
   status/            compose.tsx, [userId].tsx (full-screen viewer)
   call/[id].tsx      outgoing, incoming and active call — one surface, three stages
+  settings/          index, profile, privacy, chats, notifications, storage, blocked
   new-chat.tsx       people picker + New group entry
   new-group.tsx      two-step creation (participants -> subject & icon)
   add-members.tsx    add to an existing group
@@ -60,8 +62,9 @@ components/chat/     Bubble, ChatRow, Composer, MediaBubble, VoiceNoteBubble,
 components/group/    ContactPicker, SelectionChips, MemberRow, InfoSection, TextPrompt
 components/status/   StatusAvatar (ring), SegmentedProgress, ViewerSheet
 components/call/     StreamView (RTCView behind the seam)
+components/settings/ SettingsCard, SettingsRow
 db/                  schema.ts, client.ts (connection + revision), chats.ts, messages.ts,
-                     members.ts, profiles.ts, status.ts, calls.ts,
+                     members.ts, profiles.ts, status.ts, calls.ts, blocks.ts,
                      attachments.ts (attachments + reactions)
 hooks/               useLiveQuery, useChats, useConversation, useMembers, useSignedUrls,
                      useStatus, useCalls, useVoiceRecorder, useAppSync
@@ -71,18 +74,17 @@ services/            storage, supabase, auth, phone, contacts (pure), contactSyn
                      reactions, groups (pure), groupSync, chatSync, contactCard,
                      status (pure), statusSync, calls (pure), callSession,
                      callSignal, callSync, callFlow, callNotifications,
-                     webrtc (native seam)
+                     webrtc (native seam), settings (pure), preferences, privacySync
 services/realtime/   messages.ts (postgres_changes), presence.ts (typing + presence),
                      membership.ts (chat_members + chats), status.ts
 services/sync/       outbox.ts (text), uploads.ts (media), bootstrap.ts (server -> SQLite)
-stores/              session.ts, call.ts (both Zustand)
+stores/              session.ts, call.ts, settings.ts (Zustand)
 supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies),
                      0003_groups.sql (admin guards + system-message triggers),
                      0004_status.sql (view-insert guard + expiry sweep),
-                     0005_calls.sql (outcome-write guard + stale-call sweep)
+                     0005_calls.sql (outcome-write guard + stale-call sweep),
+                     0006_privacy.sql (blocking, presence guard, reciprocity)
 ```
-
-Arriving in later phases: `app/call/[id]`, `app/settings/`.
 
 Conventions worth knowing before writing code here:
 - `components/ui/Text` takes `variant` (type role) and `tint` (color) — **not** `role`/`color`,
@@ -147,6 +149,15 @@ Conventions worth knowing before writing code here:
   the next launch. The history row is in SQLite.
 - Simultaneous dials are resolved by comparing user ids (`isPolite`), because the rule has to be
   decided without talking. Both sides compute the same answer from what they already know.
+- **A privacy setting is a description of a Postgres rule, never the rule itself.** Every row in
+  `app/settings/privacy.tsx` mirrors something in `0006_privacy.sql`. Adding a toggle means
+  writing the policy or trigger first; a toggle with no server rule behind it must not ship.
+- **Broadcast payloads cannot be filtered per-subscriber** — there is no RLS on a Realtime
+  channel message. So typing indicators are enforced by not *sending*, with the receiving-side
+  filter as a second line. Durable signals like presence get a real trigger.
+- Device preferences (wallpaper, notification toggles, font size) live in `services/preferences.ts`
+  behind the storage seam and never reach the server. Privacy settings are the opposite: server
+  only, cached for rendering.
 
 ## Stack (fixed — do not substitute)
 

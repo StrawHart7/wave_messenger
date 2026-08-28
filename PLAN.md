@@ -273,6 +273,45 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** the full definition-of-done checklist in `docs/BUILD_SPEC.md` passes.
 
+> **Code complete. The definition-of-done checklist does NOT pass, and cannot yet.**
+> `npm run verify` is green (232 tests, 20 new: privacy audiences, storage breakdown, appearance
+> and the preferences store). Seven of the checklist's eight items require a running app and a
+> live Supabase project; the eighth — typecheck, lint, tests — is the only one met.
+> `docs/DEVIATIONS.md` is the honest list the spec asks the build to finish with.
+>
+> A third hole in 0001, closed in `0006_privacy.sql`, and the reason this phase is not just UI:
+> **the privacy settings were enforced on read but not on write.** `public_profiles` correctly
+> nulled avatar, about and last-seen per the owner's setting — but the *client* is what writes
+> presence, so a client ignoring its own setting would happily keep publishing it. A trigger now
+> refuses to store `is_online` at all when the setting is `nobody`.
+>
+> Also added there:
+> - **Blocking, for real.** The contact screen has had a Block row since phase 5 that did nothing,
+>   on the stated grounds that a block living on one device is theatre. There is now a `blocks`
+>   table readable only by the blocker — the blocked party must never be able to learn they were
+>   blocked — and it cuts message inserts, the contact relationship, and every profile column.
+> - **Reciprocity.** Hiding your last seen now hides everyone else's from you, and read receipts
+>   work both ways. Without it the setting is a one-way mirror: a worse product and a worse
+>   bargain.
+>
+> Decisions:
+> - **Typing indicators are enforced by not sending.** A Realtime broadcast payload has no RLS, so
+>   "nobody sees me typing" can only be true if nothing leaves the device. The receiving-side
+>   filter is the second line, not the first.
+> - **Device preferences never reach the server.** A wallpaper is a property of this phone, not of
+>   the account; syncing it would put a row in Postgres behind every taste decision.
+> - **Privacy writes are optimistic and reverted on failure.** Showing "Nobody" for a setting the
+>   server refused is the worst lie this screen could tell, because someone would rely on it.
+> - **Wallpapers are solid tints, not photographs** — megabytes of bundle for something changed
+>   once.
+> - **"Report" is visible and does nothing**, and does not claim otherwise: there is no moderation
+>   backend to report to.
+>
+> **The polish pass in this phase's fourth bullet did not happen.** Re-screenshotting every screen
+> in both themes and diffing against `design-reference/` needs the app to run. Haptics and
+> accessibility labels were added as the screens were written, not as a separate pass. Treat every
+> screen as unreviewed against its reference image.
+
 ---
 
 ## Working rules

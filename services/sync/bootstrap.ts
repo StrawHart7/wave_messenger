@@ -42,6 +42,8 @@ type MemberRow = {
     about: string | null;
     last_seen_at: string | null;
     is_online: boolean | null;
+    read_receipts_enabled: boolean;
+    typing_indicators_enabled: boolean;
   } | null;
 };
 
@@ -74,7 +76,7 @@ export async function pullChats(viewerId: string): Promise<void> {
 
   const { data: memberData, error: memberError } = await supabase
     .from('chat_members')
-    .select('chat_id, user_id, role, public_profiles!inner(id, display_name, avatar_path, about, last_seen_at, is_online)')
+    .select('chat_id, user_id, role, public_profiles!inner(id, display_name, avatar_path, about, last_seen_at, is_online, read_receipts_enabled, typing_indicators_enabled)')
     .in('chat_id', chatIds);
 
   if (memberError) throw memberError;
@@ -90,6 +92,8 @@ export async function pullChats(viewerId: string): Promise<void> {
       about: profile.about,
       isOnline: profile.is_online === true,
       lastSeenAt: profile.last_seen_at ? new Date(profile.last_seen_at).getTime() : null,
+      readReceipts: profile.read_receipts_enabled,
+      typingIndicators: profile.typing_indicators_enabled,
     });
   }
 

@@ -25,6 +25,7 @@ const FILTERS: { key: ChatFilter; label: string }[] = [
 export default function ChatsScreen() {
   const { colors, spacing, radii, iconSizes, elevation } = useTheme();
   const viewerId = useSession((s) => s.userId) ?? '';
+  const profile = useSession((s) => s.profile);
 
   const [filter, setFilter] = useState<ChatFilter>('all');
   const [search, setSearch] = useState('');
@@ -35,7 +36,20 @@ export default function ChatsScreen() {
   return (
     <Screen
       title="Chats"
-      leading={<Avatar name="Wave" size="sm" />}
+      leading={
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Settings"
+          onPress={() => router.push('/settings')}
+          hitSlop={8}
+        >
+          <Avatar
+            uri={profile?.avatarPath ? publicUrl('avatars', profile.avatarPath) : null}
+            name={profile?.displayName ?? 'Wave'}
+            size="sm"
+          />
+        </Pressable>
+      }
       trailing={
         <MaterialIcons name="photo-camera" size={iconSizes.xl} color={colors.tide.primary} />
       }

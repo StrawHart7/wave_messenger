@@ -16,6 +16,7 @@ export function Composer({
   onAttach,
   onCamera,
   onMic,
+  enterToSend = false,
 }: {
   value: string;
   onChangeText: (next: string) => void;
@@ -23,6 +24,8 @@ export function Composer({
   onAttach?: () => void;
   onCamera?: () => void;
   onMic?: () => void;
+  /** Return sends instead of adding a newline (Settings → Chats). */
+  enterToSend?: boolean;
 }) {
   const { colors, radii, spacing, type, iconSizes } = useTheme();
   const [height, setHeight] = useState<number>(spacing.composerMinHeight);
@@ -69,6 +72,11 @@ export function Composer({
           placeholder="Message"
           placeholderTextColor={colors.tide.onSurfaceVariant}
           multiline
+          // `submitBehavior` keeps the keyboard up after a send; a composer that
+          // dismisses it makes a back-and-forth conversation a tapping exercise.
+          submitBehavior={enterToSend ? 'submit' : 'newline'}
+          returnKeyType={enterToSend ? 'send' : 'default'}
+          onSubmitEditing={enterToSend ? onSend : undefined}
           onContentSizeChange={(event) =>
             // Grow with the text but stop at roughly five lines, as WhatsApp does.
             setHeight(Math.min(120, Math.max(spacing.composerMinHeight, event.nativeEvent.contentSize.height)))

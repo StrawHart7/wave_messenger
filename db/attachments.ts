@@ -73,6 +73,23 @@ export function chatMedia(chatId: string, limit = 12): { items: Attachment[]; to
   return { items: rows.map(toAttachment), total: count?.total ?? 0 };
 }
 
+/** Bytes and item counts per chat, for the storage screen. */
+export function storageUsage(): { chatId: string; bytes: number; items: number }[] {
+  return db()
+    .getAllSync<{ chat_id: string; bytes: number | null; items: number }>(
+      `select chat_id, sum(byte_size) as bytes, count(*) as items
+         from attachments group by chat_id`,
+    )
+    .map((row) => ({ chatId: row.chat_id, bytes: row.bytes ?? 0, items: row.items }));
+}
+
+/** Drops the cached media for one chat. The messages keep their bubbles. */
+export function clearChatMedia(chatId: string): void {
+  mutate(() => {
+    db().runSync('delete from attachments where chat_id = ?', [chatId]);
+  });
+}
+
 export function upsertAttachment(attachment: Attachment & { id: string }): void {
   mutate(() => {
     db().runSync(
