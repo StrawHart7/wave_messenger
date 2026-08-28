@@ -2,8 +2,9 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phases 1-2** — Expo Router shell, theme system, UI primitives; Supabase schema with
-> RLS, phone-OTP auth and onboarding. Phases 3-8 in [PLAN.md](PLAN.md).
+> Status: **Phases 1-3** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
+> and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime.
+> Phases 4-8 in [PLAN.md](PLAN.md).
 
 ## Stack
 
@@ -20,10 +21,13 @@ A production-grade mobile messenger (WhatsApp-class UX) built with React Native 
 ## Repository layout
 
 ```
-app/                Expo Router — (auth)/ and (tabs)/, more per phase
-components/         ui/ primitives and auth/ (routing guard, country picker)
+app/                Expo Router — (auth)/, (tabs)/, chat/[id]
+components/         ui/ primitives, auth/, chat/ (bubbles, rows, composer)
+db/                 SQLite: schema, connection, chat and message queries
+hooks/              useLiveQuery (SQLite -> React), useChats, useMessages
 theme/              tokens.ts (mirrors DESIGN.md), fonts.ts, ThemeProvider
-services/           supabase, auth, phone, contacts, media, storage seam
+services/           supabase, auth, phone, contacts, media, storage seam,
+                    messageState, grouping, chatList, realtime/, sync/
 stores/             session (Zustand)
 supabase/migrations/  schema + RLS, storage buckets + policies
 PLAN.md             8 phases, exit criteria per phase, risk register
@@ -36,6 +40,13 @@ docs/
 
 `design-reference/` is the visual source of truth. Every screen implemented must be compared
 against its `screen.png` and iterated on until near-identical — see the loop in `docs/BUILD_SPEC.md`.
+
+## How the data flows
+
+The UI reads from SQLite and nothing else. Sending writes an optimistic row and returns; the
+outbox drains it to Supabase in the background; realtime writes what comes back into SQLite;
+`useLiveQuery` re-reads and the screen updates. One direction, one source of truth — which is
+why the app renders instantly offline and why an app kill mid-send loses nothing.
 
 ## Design system
 

@@ -90,6 +90,20 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** two devices exchange text in real time; ticks go clock → grey → double grey → blue; typing indicator fires; force-quit and reopen restores the full thread instantly with the network off.
 
+> **Code complete, verification outstanding.** All of the above is written and passes
+> `npm run verify` (75 tests, 43 of them new: the state machine, run grouping, date separators
+> and the chat-list rules). The two-device exit criterion needs a live Supabase project, which
+> phase 2 still owes.
+>
+> Deviations, all deliberate:
+> - **FlashList v2 dropped `inverted`.** The conversation renders chronologically with
+>   `maintainVisibleContentPosition.startRenderingFromBottom` and pages through `onStartReached`.
+>   This is the library's own chat idiom and behaves better than a hand-rolled inversion.
+> - **Bubble radius is 12px, not the 7.5px in DESIGN.md's prose** — the polished conversation
+>   screens draw 12, and the screens outrank the prose.
+> - Reply-swipe is deferred to phase 4, where it sits next to the long-press action sheet it
+>   shares gesture handling with.
+
 ## Phase 4 — Rich content
 
 - Media: pick/capture, client-side compression, upload with progress, thumbnails, `expo-image` cache, full-screen viewer.

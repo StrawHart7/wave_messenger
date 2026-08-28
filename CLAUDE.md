@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-2 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth, the three onboarding screens and the routing guard. Phase 3 (messaging core) is next — see `PLAN.md`.
+Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-3 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime. Phase 4 (media, voice notes, reactions) is next — see `PLAN.md`.
 
 Read before doing anything:
 
@@ -42,18 +42,24 @@ Present today:
 ```
 app/                 _layout.tsx (fonts, providers, AuthGate)
   (auth)/            phone, otp, profile-setup
-  (tabs)/            four stub screens
+  (tabs)/            chats (live), updates/communities/calls stubs
+  chat/[id].tsx      conversation
 components/ui/       Text, Avatar, Badge, Pill, ListRow, Ticks, TextField, OtpInput, Screen
 components/auth/     AuthGate (routing guard), CountryPicker
+components/chat/     Bubble, ChatChip, UnreadDivider, ChatRow, Composer
+db/                  schema.ts, client.ts (connection + revision), chats.ts, messages.ts
+hooks/               useLiveQuery, useChats, useMessages
 theme/               tokens.ts, fontFamilies.ts, fonts.ts, ThemeProvider.tsx
-services/            storage.ts (driver seam), supabase.ts, auth.ts, phone.ts,
-                     contacts.ts (pure), contactSync.ts (native), media.ts
+services/            storage, supabase, auth, phone, contacts (pure), contactSync,
+                     media, messageState, grouping, chatList
+services/realtime/   messages.ts (postgres_changes), presence.ts (typing + presence)
+services/sync/       outbox.ts
 stores/              session.ts (Zustand)
 supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies)
 ```
 
-Arriving in later phases: `app/chat/[id]`, `app/status/[userId]`, `app/call/[id]`,
-`app/settings/`, `components/chat/`, `db/` (SQLite), `services/realtime|sync/`.
+Arriving in later phases: `app/status/[userId]`, `app/call/[id]`, `app/settings/`,
+group screens, the attachment sheet and reaction bar.
 
 Conventions worth knowing before writing code here:
 - `components/ui/Text` takes `variant` (type role) and `tint` (color) — **not** `role`/`color`,
@@ -66,6 +72,17 @@ Conventions worth knowing before writing code here:
   (`services/contactSync.ts`). Follow that split for every new service.
 - The client reads the `public_profiles` view, never the `profiles` table: the privacy settings
   are applied inside the view, so a hidden avatar or last-seen is null before it leaves Postgres.
+- **Every local write goes through `db/client.ts`'s `mutate()`.** It bumps a revision that
+  `useLiveQuery` (a `useSyncExternalStore` over SQLite) watches. Writing to the database outside
+  `mutate()` means the screen never updates.
+- Messages are keyed locally by `client_id`, not the server id — a message exists before the
+  server has seen it. Reconciliation matches on `client_id`; matching on content or timestamp is
+  how duplicates appear.
+- Delivery state only ever moves forward (`services/messageState.ts`). Receipts arrive out of
+  order; without that rule the ticks flicker blue then grey.
+- **FlashList v2 has no `inverted` and no `estimatedItemSize`.** Chat lists render chronologically
+  with `maintainVisibleContentPosition.startRenderingFromBottom` and load older messages through
+  `onStartReached`.
 
 ## Stack (fixed — do not substitute)
 

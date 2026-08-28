@@ -205,6 +205,13 @@ export const typography = {
   labelSm: { fontSize: 12, lineHeight: 16, weight: '500', letterSpacing: 0.24 },
   buttonText: { fontSize: 14, lineHeight: 18, weight: '600' },
   sectionHeader: { fontSize: 13, lineHeight: 18, weight: '400' },
+  /** Inside a bubble the reference runs looser than a list row: 15/22. */
+  bubbleBody: { fontSize: 15, lineHeight: 22, weight: '400' },
+  /** The timestamp tucked into the bubble corner is a size smaller than a list one. */
+  bubbleMeta: { fontSize: 10, lineHeight: 13, weight: '400' },
+  /** Date separators and system notices. */
+  chip: { fontSize: 11, lineHeight: 15, weight: '500' },
+  composer: { fontSize: 16, lineHeight: 21, weight: '400' },
 } as const;
 
 export type TypeRole = keyof typeof typography;
@@ -224,6 +231,11 @@ export const spacing = {
   avatarXl: 96,
   avatarGroupRow: 40,
   statusDot: 14,
+  /** Conversation geometry, from the polished reference. */
+  bubbleMaxWidthRatio: 0.82,
+  bubbleTailSize: 8,
+  composerMinHeight: 44,
+  composerActionSize: 44,
 } as const;
 
 export const radii = {
@@ -231,10 +243,16 @@ export const radii = {
   md: 6,
   lg: 8,
   xl: 12,
-  /** Message bubbles only — the reference is explicit about 7.5. */
-  bubble: 7.5,
-  /** The corner adjacent to the screen edge when a bubble carries a tail. */
+  /**
+   * Bubbles are 12px in the polished conversation reference, not the 7.5px named in
+   * DESIGN.md's prose. The screens are the visual source of truth, so 12 wins.
+   */
+  bubble: 12,
+  /** The tail corner — top-right outgoing, top-left incoming. */
   bubbleTail: 2,
+  /** Media inside a bubble, inset by the 3px bubble padding. */
+  bubbleMedia: 9,
+  composer: 24,
   search: 10,
   full: 9999,
 } as const;

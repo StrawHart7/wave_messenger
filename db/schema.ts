@@ -1,0 +1,80 @@
+/**
+ * The local SQLite schema — the store the UI actually reads from.
+ *
+ * It is not a mirror of Postgres: it carries the fields a screen renders plus the
+ * outbox state Postgres knows nothing about (`state`, `attempts`, `client_id` as the
+ * primary key). Messages are keyed by client_id precisely because a message exists
+ * locally before the server has ever seen it.
+ */
+
+export const SCHEMA_VERSION = 1;
+
+export const MIGRATIONS: string[] = [
+  // v1 — chats, messages, receipts and the local profile cache.
+  `
+  create table if not exists profiles (
+    id text primary key,
+    display_name text not null default '',
+    avatar_path text,
+    about text,
+    last_seen_at integer,
+    is_online integer not null default 0
+  );
+
+  create table if not exists chats (
+    id text primary key,
+    kind text not null,
+    title text not null default '',
+    avatar_path text,
+    -- Per-member state, denormalised onto the row since the local db is single-user.
+    unread_count integer not null default 0,
+    pinned integer not null default 0,
+    archived integer not null default 0,
+    muted_until integer,
+    last_read_at integer not null default 0,
+    last_message_at integer not null default 0
+  );
+
+  create index if not exists chats_last_message_idx on chats (last_message_at desc);
+
+  create table if not exists chat_members (
+    chat_id text not null,
+    user_id text not null,
+    role text not null default 'member',
+    primary key (chat_id, user_id)
+  );
+
+  create table if not exists messages (
+    client_id text primary key,
+    id text unique,
+    chat_id text not null,
+    sender_id text not null,
+    kind text not null default 'text',
+    body text,
+    reply_to_id text,
+    created_at integer not null,
+    deleted_at integer,
+    -- pending | sent | delivered | read | failed
+    state text not null default 'pending',
+    attempts integer not null default 0,
+    -- Set when the row came from the server rather than a local send.
+    remote integer not null default 0
+  );
+
+  create index if not exists messages_chat_created_idx on messages (chat_id, created_at desc);
+  create index if not exists messages_outbox_idx on messages (state, created_at) where state in ('pending', 'failed');
+
+  create table if not exists receipts (
+    message_id text not null,
+    user_id text not null,
+    delivered_at integer,
+    read_at integer,
+    primary key (message_id, user_id)
+  );
+
+  create table if not exists meta (
+    key text primary key,
+    value text
+  );
+  `,
+];

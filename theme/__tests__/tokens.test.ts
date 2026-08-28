@@ -20,8 +20,11 @@ describe('design tokens', () => {
     );
   });
 
-  it('holds the geometry DESIGN.md fixes', () => {
-    expect(radii.bubble).toBe(7.5);
+  it('holds the geometry the reference fixes', () => {
+    // 12, not the 7.5 named in DESIGN.md's prose: the polished conversation screens
+    // draw 12px bubbles, and the screens outrank the prose.
+    expect(radii.bubble).toBe(12);
+    expect(radii.bubbleTail).toBe(2);
     expect(spacing.listItemHeight).toBe(72);
     expect(spacing.edgeMargin).toBe(16);
     expect(spacing.avatarLg).toBe(48);
