@@ -4,6 +4,7 @@
  */
 import * as Contacts from 'expo-contacts';
 
+import { upsertProfile } from '../db/chats';
 import { hashPhone } from './auth';
 import { dedupeContacts, toE164FromContact, type DeviceContact, type MatchedContact } from './contacts';
 import { DEFAULT_COUNTRY, findCountry } from './phone';
@@ -69,4 +70,26 @@ export async function matchRegisteredContacts(
   }
 
   return matches;
+}
+
+/**
+ * Reads the address book, matches it, and caches the matches locally so the people
+ * pickers have something to show without a network call. Returns how many Wave
+ * users were found.
+ */
+export async function syncContacts(homeCountryCode?: string): Promise<number> {
+  const contacts = await readDeviceContacts(homeCountryCode);
+  if (contacts.length === 0) return 0;
+
+  const matches = await matchRegisteredContacts(contacts);
+  for (const match of matches) {
+    upsertProfile({
+      id: match.userId,
+      displayName: match.displayName,
+      avatarPath: match.avatarPath,
+      phone: match.e164,
+    });
+  }
+
+  return matches.length;
 }

@@ -64,6 +64,11 @@ export type MessagingColors = {
   wallpaper: string;
   separator: string;
   link: string;
+  /**
+   * Sender name colours in a group. A ring rather than a semantic slot: the index
+   * is derived from the sender id so one person keeps one colour everywhere.
+   */
+  senderTints: string[];
 };
 
 const tideLight: TideColors = {
@@ -168,6 +173,9 @@ const messagingLight: MessagingColors = {
   wallpaper: '#EFEAE2',
   separator: '#E9EDEF',
   link: '#027EB5',
+  // The first three are the reference's own group-name colours (on-*-container);
+  // the rest extend the ring at the same darkness so no sender reads louder.
+  senderTints: ['#005773', '#005426', '#93000a', '#6d4c00', '#5b3fa0', '#00629b', '#8a3324', '#004d40'],
 };
 
 const messagingDark: MessagingColors = {
@@ -185,6 +193,7 @@ const messagingDark: MessagingColors = {
   wallpaper: '#0B141A',
   separator: '#232D36',
   link: '#53BDEB',
+  senderTints: ['#c0e8ff', '#6efe98', '#ffdad6', '#ffd699', '#d0bcff', '#9ecaff', '#ffb59d', '#70efde'],
 };
 
 export type Palette = { tide: TideColors; messaging: MessagingColors };
@@ -212,6 +221,8 @@ export const typography = {
   /** Date separators and system notices. */
   chip: { fontSize: 11, lineHeight: 15, weight: '500' },
   composer: { fontSize: 16, lineHeight: 21, weight: '400' },
+  /** The name under an info screen's hero avatar. */
+  heroTitle: { fontSize: 22, lineHeight: 28, weight: '600' },
 } as const;
 
 export type TypeRole = keyof typeof typography;
@@ -236,6 +247,15 @@ export const spacing = {
   bubbleTailSize: 8,
   composerMinHeight: 44,
   composerActionSize: 44,
+  /** Group geometry: the avatar in the conversation gutter and the header stack. */
+  avatarBubbleGutter: 32,
+  avatarStack: 36,
+  /** Group info: quick-action circles and the shared-media thumbnails. */
+  quickActionSize: 48,
+  mediaThumb: 80,
+  /** The collapsing hero on a contact / group info screen. */
+  heroHeight: 220,
+  heroCollapsedHeight: 60,
 } as const;
 
 export const radii = {

@@ -136,6 +136,42 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** a 3-member group exchanges messages, an admin adds and removes a member, a non-admin is refused server-side.
 
+> **Code complete, verification outstanding.** Passes `npm run verify` (147 tests, 30 new: the
+> group rules, contact-card parsing and the sender-colour ring). The three-device exit criterion
+> still needs the live Supabase project phase 2 owes.
+>
+> Two privilege holes in 0001 were found while writing this phase and are closed in
+> `0003_groups.sql`. Both were reachable with one `PATCH` from any member:
+> - **Self-promotion.** "A member updates only their own row" includes `role`. RLS cannot compare
+>   OLD and NEW, so a `before update` trigger does it.
+> - **The creator's permanent key.** `created_by` granted the right to add members forever, so a
+>   demoted admin could still add people. The creator's grant now expires the moment they are a
+>   member themselves — the single insert that seeds the group.
+>
+> Also enforced server-side: the last admin cannot demote themselves or leave while others remain,
+> because a group with no admin can never be renamed, added to, or repaired by anyone.
+>
+> Deviations and decisions:
+> - **Membership changes are narrated by Postgres triggers, not by the client.** The person being
+>   removed still has to see the line, and by then they are running no code that could write it.
+>   The text is baked at write time so a removed member stays named in the history.
+> - **Group creation is one route with two steps**, not two routes. The alternative is serialising
+>   the selection through navigation params and rebuilding it on the way back.
+> - **Both group creation steps and the picker read the local profile cache only.** Opening "New
+>   group" must not wait on a round trip to list people the app already knows.
+> - **Contact sharing landed here** (deferred from phase 4) since it needs the same picker.
+>   Location and poll are still stubbed: they need a map surface and a vote model, which are their
+>   own features rather than variations on sending a file.
+>
+> Debt from earlier phases closed on the way, because groups are unusable without it:
+> - **Realtime and the outbox were never started.** `subscribeToMessages` and `resumeOutbox` were
+>   written in phases 3-4 and called from nowhere. They now start at the root (`useAppSync`).
+> - **Nothing ever pulled from the server.** A fresh install showed an empty app forever.
+>   `services/sync/bootstrap.ts` pulls chats on session-ready and a thread when it is opened.
+> - **Remote media never resolved a URL.** `Bubble` took an `attachmentUri` nobody passed;
+>   `useSignedUrls` now mints them per page, cached across screens.
+> - `/new-chat` and `/archived` were linked from the chat list since phase 3 and did not exist.
+
 ## Phase 6 — Updates / Status
 
 - Updates tab: My status row, Recent/Viewed sections with ring avatars → against `updates_status_light`.

@@ -2,9 +2,11 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phases 1-4** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
+> Status: **Phases 1-5** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
 > and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime; media,
-> voice notes, reactions and replies. Phases 5-8 in [PLAN.md](PLAN.md).
+> voice notes, reactions and replies; groups with server-enforced admin permissions, membership
+> narrated as system messages, and the group and contact info screens. Phases 6-8 in
+> [PLAN.md](PLAN.md).
 
 ## Stack
 
@@ -49,14 +51,18 @@ outbox drains it to Supabase in the background; realtime writes what comes back 
 `useLiveQuery` re-reads and the screen updates. One direction, one source of truth — which is
 why the app renders instantly offline and why an app kill mid-send loses nothing.
 
+Realtime only carries what happens while connected. `services/sync/bootstrap.ts` covers the rest:
+chats are pulled when the session becomes ready, a thread when it is opened. Both write into
+SQLite behind whatever is already on screen, so neither blocks a render.
+
 ## Design system
 
 Tokens live in `design-reference/tide_system/DESIGN.md` and get mirrored once into `theme/tokens.ts`.
 Never hardcode a color, radius or spacing value in a component.
 
 Key values: primary `#25D366` · outgoing bubble `#D9FDD3` (light) / `#005C4B` (dark) ·
-read ticks `#53BDEB` · bubble radius `7.5px` · list item height `72px` · edge margin `16px` ·
-type Be Vietnam Pro.
+read ticks `#53BDEB` · bubble radius `12px` (the polished screens draw 12, not the 7.5 in
+DESIGN.md's prose) · list item height `72px` · edge margin `16px` · type Be Vietnam Pro.
 
 ## Getting started
 

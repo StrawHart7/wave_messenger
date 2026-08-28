@@ -5,34 +5,45 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, ImageBackground, Pressable, View, useWindowDimensions } from 'react-native';
+import { Alert, ImageBackground, Modal, Pressable, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AttachmentSheet, type AttachmentAction } from '../../components/chat/AttachmentSheet';
-import { Bubble, ChatChip, UnreadDivider } from '../../components/chat/Bubble';
-import { Composer } from '../../components/chat/Composer';
-import { MessageActions, type MessageAction } from '../../components/chat/MessageActions';
-import { SwipeToReply } from '../../components/chat/SwipeToReply';
-import { VoiceRecorder } from '../../components/chat/VoiceRecorder';
-import { Avatar, Text } from '../../components/ui';
-import { removeReaction, setReaction } from '../../db/attachments';
-import { getChat, markChatRead } from '../../db/chats';
-import { markDeleted } from '../../db/messages';
-import { useConversation } from '../../hooks/useConversation';
-import { useLiveQuery } from '../../hooks/useLiveQuery';
-import { useVoiceRecorder } from '../../hooks/useVoiceRecorder';
-import { kindForMime } from '../../services/attachments';
-import type { LocalMessage } from '../../services/messageState';
-import { publicUrl } from '../../services/media';
-import { sendReadReceipts } from '../../services/realtime/messages';
-import { presenceLabel, subscribeToChatPresence } from '../../services/realtime/presence';
-import { toggle } from '../../services/reactions';
-import { draftMessage, enqueue } from '../../services/sync/outbox';
-import { compressImage, sendMedia } from '../../services/sync/uploads';
-import { useSession } from '../../stores/session';
-import { useTheme } from '../../theme/ThemeProvider';
+import { AttachmentSheet, type AttachmentAction } from '../../../components/chat/AttachmentSheet';
+import { Bubble, ChatChip, UnreadDivider } from '../../../components/chat/Bubble';
+import { Composer } from '../../../components/chat/Composer';
+import { MessageActions, type MessageAction } from '../../../components/chat/MessageActions';
+import { SwipeToReply } from '../../../components/chat/SwipeToReply';
+import { VoiceRecorder } from '../../../components/chat/VoiceRecorder';
+import { TypingBubble } from '../../../components/chat/TypingBubble';
+import { ContactPicker } from '../../../components/group/ContactPicker';
+import { Avatar, Text } from '../../../components/ui';
+import { AvatarStack } from '../../../components/ui/AvatarStack';
+import { removeReaction, setReaction } from '../../../db/attachments';
+import { getChat, markChatRead } from '../../../db/chats';
+import { memberIds } from '../../../db/members';
+import { markDeleted } from '../../../db/messages';
+import { displayNames, getProfile } from '../../../db/profiles';
+import { useConversation } from '../../../hooks/useConversation';
+import { useLiveQuery } from '../../../hooks/useLiveQuery';
+import { useKnownProfiles, useMembers } from '../../../hooks/useMembers';
+import { useSignedUrls } from '../../../hooks/useSignedUrls';
+import { useVoiceRecorder } from '../../../hooks/useVoiceRecorder';
+import { kindForMime } from '../../../services/attachments';
+import { encodeContactCard } from '../../../services/contactCard';
+import { filterCandidates, groupSubtitle, headerMemberLine, senderTintIndex } from '../../../services/groups';
+import { refreshMembers } from '../../../services/groupSync';
+import type { LocalMessage } from '../../../services/messageState';
+import { publicUrl } from '../../../services/media';
+import { sendReadReceipts } from '../../../services/realtime/messages';
+import { presenceLabel, subscribeToChatPresence } from '../../../services/realtime/presence';
+import { toggle } from '../../../services/reactions';
+import { pullMessages } from '../../../services/sync/bootstrap';
+import { draftMessage, enqueue } from '../../../services/sync/outbox';
+import { compressImage, sendMedia } from '../../../services/sync/uploads';
+import { useSession } from '../../../stores/session';
+import { useTheme } from '../../../theme/ThemeProvider';
 
-const wallpaperTile = require('../../assets/chat-wallpaper-tile.png');
+const wallpaperTile = require('../../../assets/chat-wallpaper-tile.png');
 
 export default function ConversationScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -42,7 +53,9 @@ export default function ConversationScreen() {
   const viewerId = useSession((s) => s.userId) ?? '';
 
   const chat = useLiveQuery(() => getChat(chatId), [chatId]);
-  const { items, loadOlder, hasMore } = useConversation(chatId, viewerId, chat?.kind === 'group');
+  const isGroup = chat?.kind === 'group';
+  const { items, loadOlder, hasMore } = useConversation(chatId, viewerId, isGroup);
+  const members = useMembers(chatId, viewerId);
   const recorder = useVoiceRecorder();
 
   const [draft, setDraft] = useState('');
@@ -51,14 +64,26 @@ export default function ConversationScreen() {
   const [atBottom, setAtBottom] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [actionsFor, setActionsFor] = useState<LocalMessage | null>(null);
+  const [contactPicker, setContactPicker] = useState(false);
+  const [contactSearch, setContactSearch] = useState('');
   const typingRef = useRef<(() => void) | null>(null);
   const listRef = useRef<FlashListRef<(typeof items)[number]>>(null);
+
+  // A group's membership can have changed while the app was closed — a rename, a
+  // new participant, or the viewer's own removal.
+  useEffect(() => {
+    if (!isGroup || !chatId || !viewerId) return;
+    void refreshMembers(chatId, viewerId).catch(() => {});
+  }, [isGroup, chatId, viewerId]);
 
   // Opening the conversation is what clears the badge and sends read receipts.
   useEffect(() => {
     if (!chatId || !viewerId) return;
     markChatRead(chatId, viewerId);
     void sendReadReceipts(chatId, viewerId);
+    // The thread renders from SQLite immediately; this fills in anything this
+    // device has never seen, behind whatever is already on screen.
+    void pullMessages(chatId, viewerId).catch(() => {});
   }, [chatId, viewerId]);
 
   useEffect(() => {
@@ -139,6 +164,13 @@ export default function ConversationScreen() {
         return;
       }
 
+      if (action === 'contact') {
+        setContactPicker(true);
+        return;
+      }
+
+      // Location and poll need a map surface and a vote model respectively; both
+      // are their own feature rather than a variation on sending a file.
       Alert.alert('Not yet', `${action} attachments arrive in a later phase.`);
     },
     [chatId, viewerId],
@@ -203,11 +235,74 @@ export default function ConversationScreen() {
     [],
   );
 
-  const subtitle = presenceLabel({
-    typing: presence.typing.length > 0,
-    online: presence.online.some((userId) => userId !== viewerId),
-    lastSeenAt: null,
-  });
+  // Typing ids become names through the same profile cache the bubbles read.
+  const typingProfiles = useLiveQuery(() => displayNames(presence.typing), [presence.typing]);
+  const typingNames = presence.typing
+    .map((userId) => typingProfiles.get(userId)?.displayName ?? '')
+    .filter((name) => name.length > 0);
+
+  const subtitle = isGroup
+    ? groupSubtitle({ typingNames, memberLine: headerMemberLine(members, viewerId) })
+    : presenceLabel({
+        typing: presence.typing.length > 0,
+        online: presence.online.some((userId) => userId !== viewerId),
+        lastSeenAt: null,
+      });
+
+  // Tapping the header is how you reach group info or a contact card, exactly as
+  // it is in the reference — there is no other affordance for it on this screen.
+  const openInfo = useCallback(() => {
+    if (isGroup) {
+      router.push(`/chat/${chatId}/info`);
+      return;
+    }
+    const peer = memberIds(chatId).find((userId) => userId !== viewerId);
+    if (peer) router.push(`/contact/${peer}`);
+  }, [isGroup, chatId, viewerId]);
+
+  const senderTints = colors.messaging.senderTints;
+
+  const knownContacts = useKnownProfiles([viewerId]);
+  const contactCandidates = filterCandidates(knownContacts, { query: contactSearch });
+
+  const shareContact = useCallback(
+    (candidate: { userId: string; displayName: string }) => {
+      setContactPicker(false);
+      // The number is not in the picker's shape; it comes from the profile cache.
+      const phone = getProfile(candidate.userId)?.phone ?? '';
+      enqueue(
+        draftMessage({
+          chatId,
+          senderId: viewerId,
+          kind: 'contact',
+          body: encodeContactCard({
+            name: candidate.displayName,
+            phone,
+            userId: candidate.userId,
+          }),
+        }),
+      );
+    },
+    [chatId, viewerId],
+  );
+
+  // Signed URLs for every attachment on the page, minted once for the whole list.
+  const mediaUrls = useSignedUrls(
+    items.flatMap((item) =>
+      item.type === 'message' && item.attachment && !item.attachment.localUri
+        ? [item.attachment.storagePath]
+        : [],
+    ),
+  );
+
+  // In a group the reply banner has to name the person, not the chat.
+  const replyToProfiles = useLiveQuery(
+    () => displayNames(replyTo ? [replyTo.senderId] : []),
+    [replyTo?.senderId],
+  );
+  const replyToName = replyTo
+    ? (replyToProfiles.get(replyTo.senderId)?.displayName ?? (chat?.title ?? ''))
+    : '';
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: colors.tide.surface }}>
@@ -226,22 +321,44 @@ export default function ConversationScreen() {
           <MaterialIcons name="arrow-back" size={iconSizes.xl} color={colors.tide.primary} />
         </Pressable>
 
-        <Avatar
-          uri={chat?.avatarPath ? publicUrl('avatars', chat.avatarPath) : null}
-          name={chat?.title ?? ''}
-          size="sm"
-        />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={isGroup ? 'Group info' : 'Contact info'}
+          onPress={openInfo}
+          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.stackSm }}
+        >
+          {isGroup && !chat?.avatarPath && members.length > 1 ? (
+            <AvatarStack
+              faces={members
+                .filter((member) => member.userId !== viewerId)
+                .map((member) => ({
+                  uri: member.avatarPath ? publicUrl('avatars', member.avatarPath) : null,
+                  name: member.displayName,
+                }))}
+            />
+          ) : (
+            <Avatar
+              uri={chat?.avatarPath ? publicUrl('avatars', chat.avatarPath) : null}
+              name={chat?.title ?? ''}
+              size="sm"
+            />
+          )}
 
-        <View style={{ flex: 1 }}>
-          <Text variant="chatName" tint={colors.tide.onBackground} numberOfLines={1}>
-            {chat?.title ?? ''}
-          </Text>
-          {subtitle ? (
-            <Text variant="bubbleMeta" tint={colors.messaging.meta}>
-              {subtitle}
+          <View style={{ flex: 1 }}>
+            <Text variant="chatName" tint={colors.tide.onBackground} numberOfLines={1}>
+              {chat?.title ?? ''}
             </Text>
-          ) : null}
-        </View>
+            {subtitle ? (
+              <Text
+                variant="bubbleMeta"
+                tint={typingNames.length > 0 ? colors.tide.primary : colors.messaging.meta}
+                numberOfLines={1}
+              >
+                {subtitle}
+              </Text>
+            ) : null}
+          </View>
+        </Pressable>
 
         <Pressable accessibilityRole="button" accessibilityLabel="Video call" hitSlop={8}>
           <MaterialIcons name="videocam" size={iconSizes.xl} color={colors.tide.primary} />
@@ -278,9 +395,27 @@ export default function ConversationScreen() {
             setAtBottom(distanceFromBottom < 80);
           }}
           contentContainerStyle={{ paddingVertical: spacing.stackMd }}
+          ListFooterComponent={
+            presence.typing.length > 0 && isGroup ? (
+              <TypingBubble
+                name={typingNames[0] ?? ''}
+                avatarPath={
+                  members.find((member) => member.userId === presence.typing[0])?.avatarPath ?? null
+                }
+              />
+            ) : presence.typing.length > 0 ? (
+              <TypingBubble />
+            ) : null
+          }
           renderItem={({ item }) => {
             if (item.type === 'date') return <ChatChip label={item.label} />;
             if (item.type === 'unread') return <UnreadDivider count={item.count} />;
+
+            // Membership changes are narrated by the server as system messages, and
+            // they read as notices in the thread rather than as anyone's bubble.
+            if (item.message.kind === 'system') {
+              return <ChatChip label={item.message.body ?? ''} />;
+            }
 
             return (
               <SwipeToReply onReply={() => setReplyTo(item.message)}>
@@ -289,11 +424,24 @@ export default function ConversationScreen() {
                   viewerId={viewerId}
                   position={item.position}
                   tail={item.position === 'single' || item.position === 'last'}
+                  senderName={isGroup ? item.sender?.displayName : null}
+                  senderTint={
+                    senderTints[senderTintIndex(item.message.senderId, senderTints.length)]
+                  }
+                  senderAvatarUri={
+                    item.sender?.avatarPath ? publicUrl('avatars', item.sender.avatarPath) : null
+                  }
+                  gutter={isGroup}
+                  showsAvatar={item.showsAvatar}
                   attachment={item.attachment}
+                  attachmentUri={
+                    item.attachment ? (mediaUrls.get(item.attachment.storagePath) ?? null) : null
+                  }
                   reactions={item.reactionPills}
                   replyTo={item.replyTo}
                   maxMediaWidth={Math.min(260, width * 0.62)}
                   onLongPress={() => setActionsFor(item.message)}
+                  onOpenContact={(userId) => userId && router.push(`/contact/${userId}`)}
                 />
               </SwipeToReply>
             );
@@ -339,7 +487,7 @@ export default function ConversationScreen() {
         >
           <View style={{ flex: 1 }}>
             <Text variant="labelSm" tint={colors.tide.secondary}>
-              {replyTo.senderId === viewerId ? 'You' : (chat?.title ?? '')}
+              {replyTo.senderId === viewerId ? 'You' : replyToName}
             </Text>
             <Text variant="bubbleMeta" tint={colors.messaging.meta} numberOfLines={1}>
               {replyTo.body ?? replyTo.kind}
@@ -378,6 +526,45 @@ export default function ConversationScreen() {
         onClose={() => setSheetOpen(false)}
         onSelect={(action) => void attach(action)}
       />
+
+      <Modal
+        visible={contactPicker}
+        animationType="slide"
+        onRequestClose={() => setContactPicker(false)}
+      >
+        <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: colors.tide.background }}>
+          <View
+            style={{
+              height: spacing.appBarHeight,
+              paddingHorizontal: spacing.edgeMargin,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: spacing.stackMd,
+              borderBottomWidth: 1,
+              borderBottomColor: colors.messaging.separator,
+            }}
+          >
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Cancel"
+              onPress={() => setContactPicker(false)}
+              hitSlop={8}
+            >
+              <MaterialIcons name="close" size={iconSizes.xl} color={colors.tide.primary} />
+            </Pressable>
+            <Text variant="navTitle" tint={colors.tide.onBackground}>
+              Share contact
+            </Text>
+          </View>
+
+          <ContactPicker
+            candidates={contactCandidates}
+            search={contactSearch}
+            onSearch={setContactSearch}
+            onToggle={shareContact}
+          />
+        </SafeAreaView>
+      </Modal>
 
       <MessageActions
         visible={actionsFor !== null}

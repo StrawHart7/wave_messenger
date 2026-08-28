@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthGate } from '../components/auth/AuthGate';
+import { useAppSync } from '../hooks/useAppSync';
 import { fontAssets } from '../theme/fonts';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
 
@@ -14,6 +15,9 @@ void SplashScreen.preventAutoHideAsync();
 
 function RootStack() {
   const { colors, scheme } = useTheme();
+
+  // Realtime, the initial pull and the outbox all live here, above every route.
+  useAppSync();
 
   return (
     <>

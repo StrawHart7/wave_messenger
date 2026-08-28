@@ -92,18 +92,50 @@ export function upsertChat(chat: {
   kind: string;
   title: string;
   avatarPath?: string | null;
+  description?: string | null;
+  createdBy?: string | null;
+  myRole?: 'member' | 'admin';
   lastMessageAt?: number;
 }): void {
   mutate(() => {
     db().runSync(
-      `insert into chats (id, kind, title, avatar_path, last_message_at)
-       values (?, ?, ?, ?, ?)
+      `insert into chats (id, kind, title, avatar_path, description, created_by, my_role, last_message_at)
+       values (?, ?, ?, ?, ?, ?, ?, ?)
        on conflict (id) do update set
          kind = excluded.kind,
-         title = excluded.title,
-         avatar_path = excluded.avatar_path,
+         -- The outbox upserts a chat with an empty title when it drains a message
+         -- for a chat it has never seen; that must not wipe a real subject.
+         title = case when excluded.title = '' then chats.title else excluded.title end,
+         avatar_path = coalesce(excluded.avatar_path, chats.avatar_path),
+         description = coalesce(excluded.description, chats.description),
+         created_by = coalesce(excluded.created_by, chats.created_by),
+         my_role = coalesce(excluded.my_role, chats.my_role),
          last_message_at = max(chats.last_message_at, excluded.last_message_at)`,
-      [chat.id, chat.kind, chat.title, chat.avatarPath ?? null, chat.lastMessageAt ?? Date.now()],
+      [
+        chat.id,
+        chat.kind,
+        chat.title,
+        chat.avatarPath ?? null,
+        chat.description ?? null,
+        chat.createdBy ?? null,
+        chat.myRole ?? null,
+        chat.lastMessageAt ?? Date.now(),
+      ],
+    );
+  });
+}
+
+/**
+ * Bumps a chat's sort position, creating a placeholder row if the chat is unknown.
+ * Sending must never rewrite `kind` or `title` — the sender knows neither, and a
+ * group would be demoted to a direct chat by its own outgoing message.
+ */
+export function touchChat(chatId: string, at: number): void {
+  mutate(() => {
+    db().runSync(
+      `insert into chats (id, kind, title, last_message_at) values (?, 'direct', '', ?)
+       on conflict (id) do update set last_message_at = max(chats.last_message_at, excluded.last_message_at)`,
+      [chatId, at],
     );
   });
 }
@@ -112,22 +144,30 @@ export function upsertProfile(profile: {
   id: string;
   displayName: string;
   avatarPath?: string | null;
+  about?: string | null;
+  phone?: string | null;
   isOnline?: boolean;
   lastSeenAt?: number | null;
 }): void {
   mutate(() => {
     db().runSync(
-      `insert into profiles (id, display_name, avatar_path, is_online, last_seen_at)
-       values (?, ?, ?, ?, ?)
+      `insert into profiles (id, display_name, avatar_path, about, phone, is_online, last_seen_at)
+       values (?, ?, ?, ?, ?, ?, ?)
        on conflict (id) do update set
          display_name = excluded.display_name,
          avatar_path = coalesce(excluded.avatar_path, profiles.avatar_path),
+         -- A null from the server means "hidden by their privacy settings", not
+         -- "cleared": keep what we already had rather than blanking the row.
+         about = coalesce(excluded.about, profiles.about),
+         phone = coalesce(excluded.phone, profiles.phone),
          is_online = excluded.is_online,
          last_seen_at = coalesce(excluded.last_seen_at, profiles.last_seen_at)`,
       [
         profile.id,
         profile.displayName,
         profile.avatarPath ?? null,
+        profile.about ?? null,
+        profile.phone ?? null,
         profile.isOnline ? 1 : 0,
         profile.lastSeenAt ?? null,
       ],

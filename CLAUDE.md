@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-4 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet. Phase 5 (groups) is next — see `PLAN.md`.
+Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-5 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet; groups, membership, admin permissions and the info screens. Phase 6 (Updates / Status) is next — see `PLAN.md`.
 
 Read before doing anything:
 
@@ -40,29 +40,39 @@ Corollaries:
 Present today:
 
 ```
-app/                 _layout.tsx (fonts, providers, AuthGate)
+app/                 _layout.tsx (fonts, providers, AuthGate, useAppSync)
   (auth)/            phone, otp, profile-setup
   (tabs)/            chats (live), updates/communities/calls stubs
-  chat/[id].tsx      conversation
-components/ui/       Text, Avatar, Badge, Pill, ListRow, Ticks, TextField, OtpInput, Screen
+  chat/[id]/         index.tsx (conversation), info.tsx (group info)
+  contact/[id].tsx   contact info, collapsing hero
+  new-chat.tsx       people picker + New group entry
+  new-group.tsx      two-step creation (participants -> subject & icon)
+  add-members.tsx    add to an existing group
+  archived.tsx       archived chats
+components/ui/       Text, Avatar, AvatarStack, Badge, Pill, ListRow, Ticks, TextField,
+                     OtpInput, Screen
 components/auth/     AuthGate (routing guard), CountryPicker
 components/chat/     Bubble, ChatRow, Composer, MediaBubble, VoiceNoteBubble,
-                     VoiceRecorder, AttachmentSheet, MessageActions, SwipeToReply
+                     VoiceRecorder, AttachmentSheet, MessageActions, SwipeToReply,
+                     TypingBubble, ContactBubble
+components/group/    ContactPicker, SelectionChips, MemberRow, InfoSection, TextPrompt
 db/                  schema.ts, client.ts (connection + revision), chats.ts, messages.ts,
-                     attachments.ts (attachments + reactions)
-hooks/               useLiveQuery, useChats, useConversation, useVoiceRecorder
+                     members.ts, profiles.ts, attachments.ts (attachments + reactions)
+hooks/               useLiveQuery, useChats, useConversation, useMembers, useSignedUrls,
+                     useVoiceRecorder, useAppSync
 theme/               tokens.ts, fontFamilies.ts, fonts.ts, ThemeProvider.tsx
 services/            storage, supabase, auth, phone, contacts (pure), contactSync,
                      media, messageState, grouping, chatList, attachments, waveform,
-                     reactions
-services/realtime/   messages.ts (postgres_changes), presence.ts (typing + presence)
-services/sync/       outbox.ts (text), uploads.ts (media)
+                     reactions, groups (pure), groupSync, chatSync, contactCard
+services/realtime/   messages.ts (postgres_changes), presence.ts (typing + presence),
+                     membership.ts (chat_members + chats)
+services/sync/       outbox.ts (text), uploads.ts (media), bootstrap.ts (server -> SQLite)
 stores/              session.ts (Zustand)
-supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies)
+supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies),
+                     0003_groups.sql (admin guards + system-message triggers)
 ```
 
-Arriving in later phases: `app/status/[userId]`, `app/call/[id]`, `app/settings/`,
-group screens, the attachment sheet and reaction bar.
+Arriving in later phases: `app/status/[userId]`, `app/call/[id]`, `app/settings/`.
 
 Conventions worth knowing before writing code here:
 - `components/ui/Text` takes `variant` (type role) and `tint` (color) — **not** `role`/`color`,
@@ -91,8 +101,22 @@ Conventions worth knowing before writing code here:
 - Per-page joins, never per-bubble queries: `useConversation` fetches attachments and reactions
   for the whole page in two queries and joins them in memory.
 - The `react-hooks` lint rules are strict here and usually right: no `setState` inside an effect
-  body, no `Date.now()` or ref reads during render. When one fires, the fix is a better design
-  (submit from the event handler, read duration from the recorder) rather than a disable comment.
+  body, no `Date.now()` or ref reads during render, and dependency arrays must be simple
+  expressions. When one fires, the fix is a better design (submit from the event handler, read
+  duration from the recorder, render a child that initialises its state on mount, collapse an
+  array dependency to a string first) rather than a disable comment.
+- **Realtime and the outbox start once, at the root** (`hooks/useAppSync.ts`), not on a screen.
+  An outbox that only drains while the chat list is mounted is not an outbox.
+- **Realtime is not a sync strategy on its own.** It carries what happens while connected;
+  `services/sync/bootstrap.ts` carries everything from before — `pullChats` on session ready,
+  `pullMessages` when a conversation opens.
+- **Membership changes are narrated by Postgres**, not the client (`0003_groups.sql`). The person
+  being removed has to see "Anna removed you" too, and by then they are running no code that
+  could have written it.
+- Group management is enforced by triggers, not only by policies: RLS cannot compare OLD and NEW,
+  which is exactly what "a member may update their own row but not their own `role`" needs.
+- Sender name colours come from `colors.messaging.senderTints`, indexed by a hash of the user id
+  (`senderTintIndex`). Indexing by list position would repaint everyone when one person joins.
 
 ## Stack (fixed — do not substitute)
 

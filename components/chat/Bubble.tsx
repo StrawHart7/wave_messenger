@@ -1,5 +1,6 @@
 import { Pressable, View } from 'react-native';
 
+import { Avatar } from '../ui/Avatar';
 import type { Attachment } from '../../services/attachments';
 import { messageTime, type RunPosition } from '../../services/grouping';
 import { showsTicks, type LocalMessage } from '../../services/messageState';
@@ -7,6 +8,8 @@ import type { ReactionPill } from '../../services/reactions';
 import { useTheme } from '../../theme/ThemeProvider';
 import { Text } from '../ui/Text';
 import { Ticks } from '../ui/Ticks';
+import { decodeContactCard } from '../../services/contactCard';
+import { ContactBubble } from './ContactBubble';
 import { DocumentAttachment, MediaAttachment } from './MediaBubble';
 import { VoiceNote } from './VoiceNoteBubble';
 
@@ -16,6 +19,14 @@ export type BubbleProps = {
   position: RunPosition;
   tail: boolean;
   senderName?: string | null;
+  /** Per-sender name colour in a group; falls back to the secondary tint. */
+  senderTint?: string;
+  /** The sender's avatar, drawn in the group gutter next to the last bubble of a run. */
+  senderAvatarUri?: string | null;
+  /** Reserve the gutter even when this bubble does not draw the avatar. */
+  gutter?: boolean;
+  /** Draw the avatar in the reserved gutter. */
+  showsAvatar?: boolean;
   attachment?: Attachment | null;
   /** Signed URL for a remote attachment; null while it is still resolving. */
   attachmentUri?: string | null;
@@ -25,6 +36,8 @@ export type BubbleProps = {
   maxMediaWidth?: number;
   onLongPress?: () => void;
   onPressReaction?: () => void;
+  /** Tapping a shared contact's action. */
+  onOpenContact?: (userId: string | undefined) => void;
 };
 
 /**
@@ -40,6 +53,10 @@ export function Bubble({
   position,
   tail,
   senderName,
+  senderTint,
+  senderAvatarUri,
+  gutter = false,
+  showsAvatar = false,
   attachment,
   attachmentUri,
   reactions = [],
@@ -47,14 +64,19 @@ export function Bubble({
   maxMediaWidth = 260,
   onLongPress,
   onPressReaction,
+  onOpenContact,
 }: BubbleProps) {
   const { colors, radii, spacing } = useTheme();
   const outgoing = message.senderId === viewerId;
 
   const background = outgoing ? colors.messaging.bubbleOutgoing : colors.messaging.bubbleIncoming;
+  // The name heads the run; the avatar ends it. That is what the reference does,
+  // and it is what keeps a long run from repeating either.
   const showsSender = Boolean(senderName) && !outgoing && (position === 'first' || position === 'single');
   const isMedia = message.kind === 'image' || message.kind === 'video' || message.kind === 'sticker';
-  const hasText = Boolean(message.body) && !message.deletedAt;
+  const contactCard = message.kind === 'contact' ? decodeContactCard(message.body) : null;
+  // A contact card lives in the body, so the body must not also render as text.
+  const hasText = Boolean(message.body) && !message.deletedAt && contactCard === null;
 
   return (
     <View
@@ -68,8 +90,20 @@ export function Bubble({
               ? spacing.stackSm
               : spacing.stackXs,
         paddingHorizontal: spacing.stackSm,
+        alignItems: 'flex-end',
+        gap: spacing.stackSm,
       }}
     >
+      {/* The gutter is reserved for the whole run, so bubbles in a run share one
+          left edge and only the last of them carries a face. */}
+      {gutter && !outgoing ? (
+        showsAvatar ? (
+          <Avatar uri={senderAvatarUri ?? null} name={senderName ?? ''} size="sm" />
+        ) : (
+          <View style={{ width: spacing.avatarBubbleGutter }} />
+        )
+      ) : null}
+
       <Pressable
         onLongPress={onLongPress}
         delayLongPress={250}
@@ -88,7 +122,7 @@ export function Bubble({
         {showsSender ? (
           <Text
             variant="labelSm"
-            tint={colors.tide.secondary}
+            tint={senderTint ?? colors.tide.secondary}
             style={{ marginBottom: 2, paddingHorizontal: isMedia ? spacing.stackSm : 0 }}
           >
             {senderName}
@@ -131,6 +165,10 @@ export function Bubble({
 
         {attachment && message.kind === 'document' ? (
           <DocumentAttachment attachment={attachment} tint={colors.messaging.meta} />
+        ) : null}
+
+        {contactCard && !message.deletedAt ? (
+          <ContactBubble card={contactCard} onOpen={() => onOpenContact?.(contactCard.userId)} />
         ) : null}
 
         {message.deletedAt ? (

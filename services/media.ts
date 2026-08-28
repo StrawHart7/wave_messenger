@@ -10,7 +10,7 @@ export const BUCKETS = {
   status: 'status',
 } as const;
 
-async function uploadLocalFile(bucket: string, path: string, localUri: string, contentType: string) {
+export async function uploadLocalObject(bucket: string, path: string, localUri: string, contentType: string) {
   assertSupabaseConfigured();
 
   // React Native's fetch can read a file:// URI into a blob; this avoids pulling in
@@ -30,7 +30,7 @@ async function uploadLocalFile(bucket: string, path: string, localUri: string, c
 export async function uploadAvatar(userId: string, localUri: string): Promise<string> {
   const extension = localUri.split('.').pop()?.toLowerCase() ?? 'jpg';
   const path = `${userId}/avatar-${Date.now()}.${extension}`;
-  return uploadLocalFile(BUCKETS.avatars, path, localUri, `image/${extension === 'png' ? 'png' : 'jpeg'}`);
+  return uploadLocalObject(BUCKETS.avatars, path, localUri, `image/${extension === 'png' ? 'png' : 'jpeg'}`);
 }
 
 /** Public URL for a stored object. Avatars live in a public bucket; chat media does not. */

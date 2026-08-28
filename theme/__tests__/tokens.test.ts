@@ -43,4 +43,13 @@ describe('design tokens', () => {
     expect(typography.chatName.fontSize).toBe(16);
     expect(typography.navTitle.fontSize).toBe(17);
   });
+
+  it('gives both themes the same number of group sender colours', () => {
+    // senderTintIndex hashes into this ring. Rings of different lengths would move
+    // a person's name colour when the theme changes.
+    expect(palettes.light.messaging.senderTints).toHaveLength(
+      palettes.dark.messaging.senderTints.length,
+    );
+    expect(palettes.light.messaging.senderTints.length).toBeGreaterThan(1);
+  });
 });

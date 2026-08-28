@@ -50,6 +50,29 @@ export function attachmentsFor(messageClientIds: string[]): Map<string, Attachme
   return new Map(rows.map((row) => [row.message_client_id, toAttachment(row)]));
 }
 
+/**
+ * Shared media for the info screen's strip, newest first, plus the total so the
+ * "24 >" affordance can count everything without loading it.
+ */
+export function chatMedia(chatId: string, limit = 12): { items: Attachment[]; total: number } {
+  const rows = db().getAllSync<AttachmentRow>(
+    `select a.* from attachments a
+       join messages m on m.client_id = a.message_client_id
+      where a.chat_id = ? and m.deleted_at is null
+      order by m.created_at desc limit ?`,
+    [chatId, limit],
+  );
+
+  const count = db().getFirstSync<{ total: number }>(
+    `select count(*) as total from attachments a
+       join messages m on m.client_id = a.message_client_id
+      where a.chat_id = ? and m.deleted_at is null`,
+    [chatId],
+  );
+
+  return { items: rows.map(toAttachment), total: count?.total ?? 0 };
+}
+
 export function upsertAttachment(attachment: Attachment & { id: string }): void {
   mutate(() => {
     db().runSync(

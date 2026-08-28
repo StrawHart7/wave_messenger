@@ -7,7 +7,7 @@
  * locally before the server has ever seen it.
  */
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const MIGRATIONS: string[] = [
   // v1 — chats, messages, receipts and the local profile cache.
@@ -112,5 +112,17 @@ export const MIGRATIONS: string[] = [
   );
 
   create index if not exists reactions_message_idx on reactions (message_id);
+  `,
+
+  // v3 — what a group needs that a direct chat never did.
+  `
+  alter table chats add column description text;
+  alter table chats add column created_by text;
+  -- The viewer's own role in this chat, denormalised: the local database is
+  -- single-user, and every screen that asks "may I do this?" asks about them.
+  alter table chats add column my_role text not null default 'member';
+
+  alter table profiles add column phone text;
+  alter table chat_members add column joined_at integer not null default 0;
   `,
 ];

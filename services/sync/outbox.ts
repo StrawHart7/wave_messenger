@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 
-import { recomputeUnread, upsertChat } from '../../db/chats';
+import { recomputeUnread, touchChat } from '../../db/chats';
 import { pendingMessages, setMessageState, upsertMessage } from '../../db/messages';
 import { isRetryable, retryDelayMs, type LocalMessage } from '../messageState';
 import { supabase, isSupabaseConfigured } from '../supabase';
@@ -20,6 +20,8 @@ export function draftMessage(input: {
   chatId: string;
   senderId: string;
   body: string;
+  /** Text unless the message carries its payload in the body, like a contact card. */
+  kind?: LocalMessage['kind'];
   replyToId?: string | null;
   now?: number;
 }): LocalMessage {
@@ -28,7 +30,7 @@ export function draftMessage(input: {
     clientId: Crypto.randomUUID(),
     chatId: input.chatId,
     senderId: input.senderId,
-    kind: 'text',
+    kind: input.kind ?? 'text',
     body: input.body,
     replyToId: input.replyToId ?? null,
     createdAt: input.now ?? Date.now(),
@@ -41,12 +43,7 @@ export function draftMessage(input: {
 /** Writes the optimistic row and kicks the flush. Never awaits the network. */
 export function enqueue(message: LocalMessage): LocalMessage {
   upsertMessage(message);
-  upsertChat({
-    id: message.chatId,
-    kind: 'direct',
-    title: '',
-    lastMessageAt: message.createdAt,
-  });
+  touchChat(message.chatId, message.createdAt);
   void flush();
   return message;
 }

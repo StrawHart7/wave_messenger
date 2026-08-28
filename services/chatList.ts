@@ -2,6 +2,7 @@
  * What a chat-list row shows: the preview line, its sender prefix, the media label
  * that replaces text, and the timestamp format that changes with age. Pure.
  */
+import { contactCardPreview } from './contactCard';
 import type { LocalMessage } from './messageState';
 
 export type ChatSummary = {
@@ -33,7 +34,7 @@ export function mediaLabel(message: LocalMessage): string | null {
     case 'document':
       return 'Document';
     case 'contact':
-      return 'Contact';
+      return null;
     case 'location':
       return 'Location';
     case 'sticker':
@@ -70,6 +71,8 @@ export function previewText(summary: ChatSummary): string {
   if (!message) return '';
   if (message.deletedAt) return 'This message was deleted';
   if (message.kind === 'system') return message.body ?? '';
+  // A contact card's body is JSON; the preview is the name inside it.
+  if (message.kind === 'contact') return contactCardPreview(message.body);
   return mediaLabel(message) ?? message.body ?? '';
 }
 
