@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Settings &amp; Privacy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#283238",
+                    "on-background": "#131d23",
+                    "on-tertiary-fixed": "#00210b",
+                    "surface-dim": "#d1dbe4",
+                    "secondary": "#006686",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#005773",
+                    "on-secondary-fixed": "#001e2b",
+                    "on-tertiary-fixed-variant": "#005225",
+                    "outline-variant": "#bbcbb9",
+                    "tertiary-fixed-dim": "#4ee07f",
+                    "surface": "#f5faff",
+                    "on-tertiary-container": "#005426",
+                    "secondary-fixed-dim": "#70d2ff",
+                    "tertiary": "#006d33",
+                    "on-surface-variant": "#3c4a3d",
+                    "surface-container": "#e5eff8",
+                    "surface-container-low": "#eaf5fe",
+                    "secondary-container": "#68cffe",
+                    "inverse-on-surface": "#e8f2fb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#d9e4ec",
+                    "outline": "#6c7b6b",
+                    "primary-fixed": "#66ff8e",
+                    "on-secondary": "#ffffff",
+                    "background": "#f5faff",
+                    "primary-container": "#25d366",
+                    "surface-container-high": "#dfeaf2",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#006d2f",
+                    "primary-fixed-dim": "#3de273",
+                    "on-primary-fixed-variant": "#005322",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#005523",
+                    "secondary-fixed": "#c0e8ff",
+                    "tertiary-container": "#3bd172",
+                    "surface-container-highest": "#d9e4ec",
+                    "tertiary-fixed": "#6efe98",
+                    "on-surface": "#131d23",
+                    "on-secondary-fixed-variant": "#004d66",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#002109",
+                    "surface-tint": "#006d2f",
+                    "surface-bright": "#f5faff",
+                    "inverse-primary": "#3de273"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "avatar-size-lg": "48px",
+                    "stack-md": "12px",
+                    "stack-xs": "4px",
+                    "bubble-padding-v": "8px",
+                    "stack-sm": "8px",
+                    "edge-margin": "16px",
+                    "avatar-size-sm": "32px",
+                    "list-item-height": "72px",
+                    "bubble-padding-h": "12px"
+            },
+            "fontFamily": {
+                    "label-sm": [
+                            "Be Vietnam Pro"
+                    ],
+                    "nav-title": [
+                            "Be Vietnam Pro"
+                    ],
+                    "chat-name": [
+                            "Be Vietnam Pro"
+                    ],
+                    "section-header": [
+                            "Be Vietnam Pro"
+                    ],
+                    "message-body": [
+                            "Be Vietnam Pro"
+                    ],
+                    "timestamp": [
+                            "Be Vietnam Pro"
+                    ],
+                    "button-text": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "nav-title": [
+                            "17px",
+                            {
+                                    "lineHeight": "22px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "chat-name": [
+                            "16px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "section-header": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "message-body": [
+                            "15px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "timestamp": [
+                            "11px",
+                            {
+                                    "lineHeight": "14px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "button-text": [
+                            "14px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface-dim font-message-body text-message-body text-on-background h-screen w-screen overflow-hidden flex items-center justify-center p-4 md:p-8">
+<!-- Split Frame Container (Simulating iPhone/Desktop Split) -->
+<div class="w-full max-w-[1024px] h-[795px] bg-surface rounded-[40px] overflow-hidden flex flex-col md:flex-row border-[8px] border-on-background/5 shadow-2xl relative">
+<!-- Left Pane: Settings List -->
+<div class="w-full md:w-[400px] bg-surface flex flex-col border-r border-outline-variant h-full z-10 hidden md:flex">
+<!-- TopAppBar Settings -->
+<div class="bg-surface text-primary font-nav-title text-nav-title docked full-width top-0 border-b border-outline-variant/50 flat no shadows transition-colors duration-200 flex justify-between items-center px-edge-margin h-list-item-height w-full shrink-0">
+<span class="font-nav-title text-nav-title text-on-background">Settings</span>
+<span class="material-symbols-outlined text-on-background" data-icon="search">search</span>
+</div>
+<!-- Profile Row -->
+<div class="p-edge-margin flex items-center gap-4 bg-surface-container-lowest m-4 rounded-2xl cursor-pointer hover:bg-surface-variant/50 transition-colors shadow-sm border border-outline-variant/20">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-outline-variant/30" data-alt="Close up portrait of a young professional woman smiling warmly, wearing a simple white blouse, soft natural lighting, light modern aesthetic, clear background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR5QSgE5WTRxVxIBFM16Vq10MZDnzXhzuasG8NP_ELUEY4CExiuU4XdCyw27AELnmzG9aWCmR3g5b3BDAO0MkBrmwCI1ZknqFx9qHSeHiZaupm1w8ALhg3IawYj0Kv6HpmKovhPIGK-bfdPo_l73OfHVasuW6stWn3bL_-0ZZ_5tD9Vzvk-2mqxdWvParfRgVCwrie5pT_rJx7JICZKS2TIygyYKy1m52wrjEK8hLbaZZdJ6F_BiBW"/>
+<div class="flex-1">
+<h2 class="font-chat-name text-chat-name text-on-background">Sarah Jenkins</h2>
+<p class="font-message-body text-message-body text-on-surface-variant text-sm line-clamp-1">Available</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code">qr_code</span>
+</div>
+</div>
+<!-- Settings Categories -->
+<div class="flex-1 overflow-y-auto px-4 pb-20">
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden divide-y divide-outline-variant/20 shadow-sm border border-outline-variant/20">
+<div class="flex items-center gap-4 p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+</div>
+<div class="flex-1">
+<span class="font-chat-name text-chat-name text-on-background">Account</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-variant/30 cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+<div class="flex-1">
+<span class="font-chat-name text-chat-name text-on-background">Privacy</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="face">face</span>
+</div>
+<div class="flex-1">
+<span class="font-chat-name text-chat-name text-on-background">Avatar</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</div>
+<div class="flex-1">
+<span class="font-chat-name text-chat-name text-on-background">Chats</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center gap-4 p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</div>
+<div class="flex-1">
+<span class="font-chat-name text-chat-name text-on-background">Notifications</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Privacy Detail (Mobile View default) -->
+<div class="flex-1 bg-surface flex flex-col h-full z-0 relative w-full">
+<!-- TopAppBar Privacy -->
+<div class="bg-surface text-primary font-nav-title text-nav-title docked full-width top-0 border-b border-outline-variant/50 flat no shadows transition-colors duration-200 flex justify-between items-center px-edge-margin h-list-item-height w-full shrink-0">
+<div class="flex items-center gap-2 cursor-pointer md:hidden">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+<span class="font-button-text text-button-text">Settings</span>
+</div>
+<div class="hidden md:flex items-center gap-2"></div>
+<span class="font-nav-title text-nav-title text-on-background md:mx-auto">Privacy</span>
+<div class="w-6 hidden md:block"></div>
+</div>
+<div class="flex-1 overflow-y-auto px-4 py-6 md:px-8 max-w-2xl mx-auto w-full space-y-6">
+<!-- Visibility Section -->
+<div class="space-y-3">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant pl-4 uppercase tracking-widest">Who can see my personal info</h3>
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden divide-y divide-outline-variant/20 shadow-sm border border-outline-variant/20">
+<div class="flex items-center justify-between p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<span class="font-chat-name text-chat-name text-on-background">Last seen and online</span>
+<div class="flex items-center gap-2">
+<span class="font-message-body text-message-body text-on-surface-variant font-medium">Nobody</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<span class="font-chat-name text-chat-name text-on-background">Profile photo</span>
+<div class="flex items-center gap-2">
+<span class="font-message-body text-message-body text-on-surface-variant font-medium">My contacts</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<span class="font-chat-name text-chat-name text-on-background">About</span>
+<div class="flex items-center gap-2">
+<span class="font-message-body text-message-body text-on-surface-variant font-medium">Everyone</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Toggles Section -->
+<div class="space-y-3 pt-2">
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden divide-y divide-outline-variant/20 shadow-sm border border-outline-variant/20">
+<div class="flex items-center justify-between p-4">
+<div class="flex flex-col pr-4">
+<span class="font-chat-name text-chat-name text-on-background">Read receipts</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant mt-1">If turned off, you won't send or receive read receipts. Read receipts are always sent for group chats.</span>
+</div>
+<!-- Custom Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-[52px] h-7 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4">
+<div class="flex flex-col pr-4">
+<span class="font-chat-name text-chat-name text-on-background">Typing indicators</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant mt-1">Show when you are typing a message.</span>
+</div>
+<!-- Custom Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-[52px] h-7 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Other Settings -->
+<div class="space-y-3 pt-2 pb-8">
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/20">
+<div class="flex items-center justify-between p-4 hover:bg-surface-variant/50 cursor-pointer transition-colors">
+<span class="font-chat-name text-chat-name text-on-background">Blocked contacts</span>
+<div class="flex items-center gap-2">
+<span class="font-button-text text-button-text text-error">2</span>
+<span class="material-symbols-outlined text-error" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Visible only on mobile) -->
+<div class="bg-surface-container text-primary font-label-sm text-label-sm hidden docked full-width bottom-0 border-t border-outline-variant flat no shadows fixed bottom-0 w-full z-50 flex justify-around items-center pt-2 pb-safe px-4 md:hidden">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mb-1" data-icon="chat">chat</span>
+<span>Chats</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mb-1" data-icon="update">update</span>
+<span>Updates</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mb-1" data-icon="groups">groups</span>
+<span>Communities</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-lg cursor-pointer">
+<span class="material-symbols-outlined mb-1" data-icon="settings">settings</span>
+<span>Settings</span>
+</div>
+</div>
+</div>
+</body></html>

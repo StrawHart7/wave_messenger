@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Chats</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#d1dbe4",
+                      "on-primary-container": "#005523",
+                      "on-tertiary-fixed": "#00210b",
+                      "on-primary-fixed-variant": "#005322",
+                      "surface-container-low": "#eaf5fe",
+                      "outline-variant": "#bbcbb9",
+                      "surface": "#f5faff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#f5faff",
+                      "tertiary-fixed": "#6efe98",
+                      "on-secondary": "#ffffff",
+                      "surface-variant": "#d9e4ec",
+                      "inverse-primary": "#3de273",
+                      "surface-container": "#e5eff8",
+                      "primary-fixed": "#66ff8e",
+                      "secondary-fixed-dim": "#70d2ff",
+                      "outline": "#6c7b6b",
+                      "secondary-fixed": "#c0e8ff",
+                      "primary": "#006d2f",
+                      "inverse-surface": "#283238",
+                      "error": "#ba1a1a",
+                      "secondary": "#006686",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#d9e4ec",
+                      "on-background": "#131d23",
+                      "on-error": "#ffffff",
+                      "tertiary": "#006d33",
+                      "inverse-on-surface": "#e8f2fb",
+                      "surface-tint": "#006d2f",
+                      "surface-container-high": "#dfeaf2",
+                      "on-tertiary-container": "#005426",
+                      "tertiary-container": "#3bd172",
+                      "background": "#f5faff",
+                      "secondary-container": "#68cffe",
+                      "primary-container": "#25d366",
+                      "primary-fixed-dim": "#3de273",
+                      "on-tertiary-fixed-variant": "#005225",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#004d66",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed": "#001e2b",
+                      "tertiary-fixed-dim": "#4ee07f",
+                      "on-primary-fixed": "#002109",
+                      "on-surface-variant": "#3c4a3d",
+                      "on-surface": "#131d23",
+                      "on-secondary-container": "#005773",
+                      "on-tertiary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-md": "12px",
+                      "stack-sm": "8px",
+                      "avatar-size-lg": "52px",
+                      "bubble-padding-h": "12px",
+                      "avatar-size-sm": "36px",
+                      "stack-xs": "4px",
+                      "edge-margin": "16px",
+                      "bubble-padding-v": "8px",
+                      "list-item-height": "76px"
+              },
+              "fontFamily": {
+                      "timestamp": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ],
+                      "chat-name": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ],
+                      "button-text": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ],
+                      "section-header": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ],
+                      "message-body": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ],
+                      "label-sm": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ],
+                      "nav-title": [
+                              "Be Vietnam Pro", "sans-serif"
+                      ]
+              },
+              "fontSize": {
+                      "timestamp": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400",
+                                      "letterSpacing": "0.01em"
+                              }
+                      ],
+                      "chat-name": [
+                              "16px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "600",
+                                      "letterSpacing": "-0.01em"
+                              }
+                      ],
+                      "button-text": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "section-header": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "message-body": [
+                              "15px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400",
+                                      "letterSpacing": "-0.01em"
+                              }
+                      ],
+                      "label-sm": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "nav-title": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600",
+                                      "letterSpacing": "-0.02em"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Custom scrollbar hiding for clean UI */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 44px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background antialiased flex justify-center items-center min-h-screen md:bg-surface-variant md:py-8">
+<!-- Mobile Device Frame Container -->
+<div class="w-full h-full md:w-[390px] md:h-[844px] md:rounded-[40px] md:shadow-2xl md:overflow-hidden relative bg-background flex flex-col md:border-[8px] md:border-black md:ring-1 md:ring-outline-variant">
+<!-- TopAppBar -->
+<div class="bg-surface/90 backdrop-blur-md dark:bg-on-background transition-colors duration-200 border-b border-outline-variant/40 dark:border-outline sticky top-0 z-40 pt-safe">
+<div class="flex justify-between items-center px-edge-margin h-[60px] w-full">
+<!-- Leading -->
+<div class="flex items-center w-12">
+<img class="w-avatar-size-sm h-avatar-size-sm rounded-full object-cover border border-outline-variant/30 shadow-sm cursor-pointer active:opacity-70 transition-opacity" data-alt="A small circular avatar showing a professional headshot of a person with a warm smile, well-lit with soft natural light against a neutral background. The style is clean and modern, suitable for a corporate or communication app profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-OB5DMCiZRVHbwhJtDuyHccfA752Uw1SAVw28bo5X0jG72tNL5x-TwJ-q5Xf07w88UbCQMM42fIVcQB5n7SFlHg8b5LohvRLau4z0R9vB8nZE2m0L7o5Wxk3QEaJekDUMfIQa_qR46Cfk7rW7mhRnE08you6b12IJpyLxflre22sdqdxlN-8DpJ2t_YJsmgTk6DvmkeBXBP2mBJuEZ5gPT2c3LlISmUV6wjXSljehYZfr0J269z3M"/>
+</div>
+<!-- Headline -->
+<div class="flex-1 flex justify-center">
+<span class="font-nav-title text-nav-title text-primary dark:text-primary-fixed">Chat</span>
+</div>
+<!-- Trailing -->
+<div class="flex items-center justify-end w-12">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-primary dark:text-primary-fixed hover:bg-surface-variant/50 dark:hover:bg-inverse-surface/50 transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 0;">photo_camera</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Content Area (Scrollable) -->
+<main class="flex-1 overflow-y-auto hide-scrollbar pb-[90px] bg-background">
+<!-- Search & Filters -->
+<div class="px-edge-margin py-3 flex flex-col gap-3 bg-surface sticky top-0 z-30">
+<!-- Search Bar -->
+<div class="relative w-full h-10 flex items-center">
+<div class="absolute left-3.5 flex items-center justify-center pointer-events-none text-on-surface-variant/70">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full h-full bg-surface-container border border-outline-variant/30 shadow-sm rounded-full pl-11 pr-4 font-message-body text-message-body text-on-surface placeholder:text-on-surface-variant/60 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none transition-all" placeholder="Search..." type="text"/>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+<button class="shrink-0 px-4 py-1.5 rounded-full bg-surface-variant text-on-surface font-section-header text-section-header shadow-sm active:scale-95 transition-transform">All</button>
+<button class="shrink-0 px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface-variant font-section-header text-section-header active:scale-95 transition-transform hover:bg-surface-variant/50">Unread</button>
+<button class="shrink-0 px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface-variant font-section-header text-section-header active:scale-95 transition-transform hover:bg-surface-variant/50">Favorites</button>
+<button class="shrink-0 px-4 py-1.5 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface-variant font-section-header text-section-header active:scale-95 transition-transform hover:bg-surface-variant/50">Groups</button>
+</div>
+</div>
+<!-- Archived Row -->
+<div class="flex items-center px-edge-margin h-14 border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer group">
+<div class="w-avatar-size-lg flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[22px]">archive</span>
+</div>
+<div class="flex-1 font-chat-name text-chat-name text-on-surface ml-3">Archived</div>
+</div>
+<!-- Chat List -->
+<div class="flex flex-col">
+<!-- Chat Row 1 (Pinned, Unread) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover shadow-sm border border-outline-variant/20" data-alt="A highly detailed close-up portrait of a professional woman with dark hair in a sleek bun, wearing a minimalist black turtleneck. She is looking slightly off-camera with a confident expression. The lighting is studio quality, soft and flattering, emphasizing modern corporate aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0tGXEmzmTvwqIa1GWhREaqWZ7C1eU1WhV_FYLK5s3lJG7AAd-Icyvgrox7HtERTz6q2CKOzWHgNs1d9FXZCSLB6DYGwkO1ZN6EaUBCBbOdXAhU943kJcfLbP6KBVA83JgyzUTojBX1SkDiKbZBhnG1IO6PlO1AUyegCssYCMkCE3ZcU9Q06DK15EKgDFY_4f9y_bObhD6lV7TsU1deoMnT39RFddj0uUlWLASGMV_a5Z4c_ClR6w"/>
+<!-- Status Dot -->
+<div class="absolute bottom-0.5 right-0.5 w-[14px] h-[14px] bg-[#25D366] rounded-full border-[2.5px] border-background shadow-sm"></div>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">Marketing Team</span>
+<span class="font-timestamp text-timestamp text-[#25D366] font-medium shrink-0 ml-2">10:42 AM</span>
+</div>
+<div class="flex items-center gap-1 w-full">
+<span class="font-message-body text-message-body text-on-surface-variant font-medium shrink-0">Sarah:</span>
+<span class="font-message-body text-message-body text-on-background font-medium truncate flex-1">The new assets are ready for review.</span>
+<!-- Indicators -->
+<div class="flex items-center gap-1.5 shrink-0 ml-2">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant/80" style="font-variation-settings: 'FILL' 1;">keep</span>
+<div class="bg-[#25D366] text-on-primary min-w-[22px] h-[22px] rounded-full flex items-center justify-center px-1.5 font-label-sm text-[12px] font-bold shadow-sm">3</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Row 2 (Read) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover shadow-sm border border-outline-variant/20" data-alt="Avatar portrait of a young man with short wavy hair and stylish glasses, wearing a light blue oxford shirt. The background is slightly blurred out showing a modern office setting. High contrast, sharp focus, clean corporate visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAobHw4KUIuL1tOgoKn26C3qNqzSPLwA21IDJUgY68DxK3cdpoQQm1PA_xCpBQ2jKf8TuhTc7rgCDY3zI56MN03ZyKYENq9H2ThgfwI82NUKNIGuhcuw9DYWt83pJKrVxX4zg9nfAN_Ro6bag4ycs5Ky_WsRMsNGEq5dU4xjlc3V6jqxS6vlbLKhsaUxveVCTytUa7k_cuROD-vm7CLHBfMFjhj_AHuatdJJmj_rvrzV28_I9gS2yx8"/>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">David Chen</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant/80 shrink-0 ml-2">Yesterday</span>
+</div>
+<div class="flex items-center gap-1.5 w-full">
+<span class="material-symbols-outlined text-[18px] text-secondary-container shrink-0" style="color: #34B7F1">done_all</span>
+<span class="font-message-body text-message-body text-on-surface-variant truncate flex-1">Sounds good, let's touch base on Monday about this.</span>
+</div>
+</div>
+</div>
+<!-- Chat Row 3 (Muted, Unread) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5 flex">
+<!-- Group Avatar Mockup -->
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant border border-outline-variant/30 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">groups</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">Project Phoenix</span>
+<span class="font-timestamp text-timestamp text-[#25D366] font-medium shrink-0 ml-2">Tuesday</span>
+</div>
+<div class="flex items-center gap-1 w-full">
+<span class="font-message-body text-message-body text-on-surface-variant font-medium shrink-0">Alex:</span>
+<span class="font-message-body text-message-body text-on-background font-medium truncate flex-1">Has anyone seen the latest spec doc?</span>
+<!-- Indicators -->
+<div class="flex items-center gap-1.5 shrink-0 ml-2">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant/80" style="font-variation-settings: 'FILL' 0;">volume_off</span>
+<div class="bg-[#25D366] text-on-primary min-w-[22px] h-[22px] rounded-full flex items-center justify-center px-1.5 font-label-sm text-[12px] font-bold shadow-sm">1</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Row 4 (Typing) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover shadow-sm border border-outline-variant/20" data-alt="A portrait of a middle-aged professional woman with silver hair wearing a structured beige blazer. Soft, elegant lighting, shallow depth of field. The image exudes confidence and corporate professionalism, suitable for an avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiOAcVjlvY4nJzErSGNOlTttU_xnQbIWcyfD4RdITglv7Kw_qDpTozScspWR2TiS_bjAJqpbTMAj-8LU8dWSlx5hHf6wK3jKqzeuF3EJ6SwA-CGzhN8yj51cqAST-PUs4WwBBfzGSWf0gJO7PYzKMWXKMEu2UvGe6qNTKszFiqvKfoDIXt3SVEHZzVbjDZhkGuFfraSdyK9UpBrU3OVDQs8z8CYkXGW8Ng5D5X67DNj7kBcGDAMJa4"/>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">Elena Rodriguez</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant/80 shrink-0 ml-2">Tuesday</span>
+</div>
+<div class="flex items-center gap-1 w-full">
+<span class="font-message-body text-message-body text-[#25D366] truncate flex-1 font-medium">typing...</span>
+</div>
+</div>
+</div>
+<!-- Chat Row 5 (Draft) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover shadow-sm border border-outline-variant/20" data-alt="Avatar of a casual professional male with a beard, wearing a plain grey t-shirt, looking directly at the camera with a neutral expression. Clean white background, high-resolution modern style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ9Spl80PkswQqjhtxqR1_RfUhyyD4zDSdoqDRBA0gSrGcZ6i72xKKDpaR8KwRELTc0tb40rkVAdg_Jk3zaPk7Wv3xKypIQYDNex5HXNiPk9SBTjhMDoChJOd7KbATUkwk6-_FxnHlHDGTbjxumW7A8qW1BJL6qIj_G7Odp7syTOPeFVmd3A2h8seKsXpI9NeG38KRySR6OE2nbgp2XDhiWpxtY5gxB5H7jkNWNP7QTOuSs_dd9Atl"/>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">Michael Chang</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant/80 shrink-0 ml-2">Monday</span>
+</div>
+<div class="flex items-center gap-1 w-full">
+<span class="font-message-body text-message-body text-error font-medium shrink-0">Draft:</span>
+<span class="font-message-body text-message-body text-on-surface-variant truncate flex-1 ml-1">I'll send over the details later this</span>
+</div>
+</div>
+</div>
+<!-- Chat Row 6 (Read) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full bg-[#68cffe]/20 border border-[#68cffe]/30 shadow-sm flex items-center justify-center text-[#005773] font-chat-name text-[20px] font-bold">
+                            JD
+                        </div>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">John Doe</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant/80 shrink-0 ml-2">Monday</span>
+</div>
+<div class="flex items-center gap-1.5 w-full">
+<span class="material-symbols-outlined text-[18px] text-secondary-container shrink-0" style="color: #34B7F1">done_all</span>
+<span class="font-message-body text-message-body text-on-surface-variant truncate flex-1">Thanks!</span>
+</div>
+</div>
+</div>
+<!-- Chat Row 7 (Photo) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover shadow-sm border border-outline-variant/20" data-alt="Avatar showing a small silhouette of a person standing on a mountain peak during sunrise. The image is warm, inspiring, and professionally shot, often used as a scenic profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVbeUri77QU1yaWvKVG5JHd8e9uAxosk_wFMomP30KxaLJgW0wi6Z0SP2T0lHnUfeo8did-R2z-snBhpO-Mv8_KeqgWG6RRCVqqsVOiye_OQHzSkxHQaD89zblWdcPxSnPr352cF6rvKa5x4smB_DtOO96cRkcCOcJRqt6bXl4IKYTXR6ooBlwEfkkkWfO8I83WuFfJZ3gcW8ZgR89jkk9joeFLmdPC8bN_Fxz6vYP2HaPtUjZ3hRS"/>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-on-background truncate">Photography Group</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant/80 shrink-0 ml-2">Sunday</span>
+</div>
+<div class="flex items-center gap-1.5 w-full">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant/80 shrink-0">image</span>
+<span class="font-message-body text-message-body text-on-surface-variant truncate flex-1">Photo</span>
+</div>
+</div>
+</div>
+<!-- Chat Row 8 (Missed Call) -->
+<div class="flex items-center px-edge-margin h-list-item-height border-b border-outline-variant/20 active:bg-surface-variant/30 transition-colors cursor-pointer relative overflow-hidden group">
+<div class="relative shrink-0 mr-3.5">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover shadow-sm border border-outline-variant/20" data-alt="Professional avatar of an elegant woman with blonde shoulder-length hair, wearing a navy blue blouse. She is smiling softly. The lighting is bright and clean, typical of corporate communications platforms." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABGSdeDDHglVYB0Y7KeitRcVGa57cvYh93Bvm85g2CcAUm_MVFPN5ARqa5jSvU1nHDKJzyNWClkBF8Xo6Gl5PBRsFskwkw1GQhuV3Didr36fV75Nk5j5Bt1hw5fNsgm45EynqKPL_lXHsTefOLh6D48DpmK3lBA_iexOytv4DH8auQyDI0AanMEh2vztHFQlAHolczlrnXDxZ2-FvZ7x_XnzFXW40-d_SAXwk4CNGLk_wfaHTvkhMu"/>
+</div>
+<div class="flex-1 flex flex-col justify-center min-w-0 h-full py-2">
+<div class="flex justify-between items-baseline mb-0.5 w-full">
+<span class="font-chat-name text-chat-name text-error truncate">Amanda Smith</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant/80 shrink-0 ml-2">Sunday</span>
+</div>
+<div class="flex items-center gap-1.5 w-full">
+<span class="material-symbols-outlined text-[18px] text-error shrink-0">call_missed</span>
+<span class="font-message-body text-message-body text-on-surface-variant truncate flex-1">Missed voice call</span>
+</div>
+</div>
+</div>
+<!-- Spacer for scrolling past FAB -->
+<div class="h-24 w-full"></div>
+</div>
+</main>
+<!-- Floating Action Button (FAB) -->
+<div class="absolute bottom-[90px] right-4 z-40">
+<button class="w-[56px] h-[56px] bg-[#25D366] rounded-[16px] flex items-center justify-center text-white shadow-lg shadow-[#25D366]/30 active:scale-95 transition-transform hover:bg-[#22c55e]">
+<span class="material-symbols-outlined text-[24px]">add_comment</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<div class="bg-surface/95 backdrop-blur-md dark:bg-inverse-surface border-t border-outline-variant/40 dark:border-outline fixed bottom-0 w-full md:absolute z-50 flex justify-around items-center pt-2 pb-safe px-2">
+<!-- Tab 1: Chats (Active) -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed hover:bg-surface-variant/50 dark:hover:bg-surface-variant/10 rounded-xl p-2 w-[72px] relative transition-colors">
+<div class="bg-primary-container/20 px-4 py-1 rounded-full mb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold">Chats</span>
+<!-- Badge -->
+<div class="absolute top-2 right-3 bg-error text-on-error min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 text-[11px] font-bold border-2 border-surface">4</div>
+</button>
+<!-- Tab 2: Updates (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 dark:hover:bg-surface-variant/10 rounded-xl p-2 w-[72px] transition-colors">
+<div class="px-4 py-1 rounded-full mb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">update</span>
+</div>
+<span class="font-label-sm text-label-sm">Updates</span>
+</button>
+<!-- Tab 3: Communities (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 dark:hover:bg-surface-variant/10 rounded-xl p-2 w-[72px] transition-colors">
+<div class="px-4 py-1 rounded-full mb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">groups</span>
+</div>
+<span class="font-label-sm text-label-sm">Communities</span>
+</button>
+<!-- Tab 4: Calls (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-surface-variant/50 dark:hover:bg-surface-variant/10 rounded-xl p-2 w-[72px] transition-colors">
+<div class="px-4 py-1 rounded-full mb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">call</span>
+</div>
+<span class="font-label-sm text-label-sm">Calls</span>
+</button>
+</div>
+</div>
+</body></html>

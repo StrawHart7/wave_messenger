@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OTP Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .blink-caret {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex items-center justify-center font-message-body text-message-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Device Simulator Frame -->
+<div class="relative w-[375px] h-[812px] bg-surface rounded-[40px] shadow-2xl overflow-hidden border-8 border-surface-container-highest flex flex-col">
+<!-- Status Bar Area (Mock) -->
+<div class="h-12 w-full flex justify-between items-center px-6 pt-2 shrink-0 bg-surface">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">9:41</span>
+<div class="flex gap-1.5 items-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[16px]">wifi</span>
+<span class="material-symbols-outlined text-[16px]">battery_full</span>
+</div>
+</div>
+<!-- Top Navigation Area -->
+<div class="h-list-item-height px-edge-margin flex items-center justify-between bg-surface shrink-0">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-variant/50 transition-colors duration-200 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<div class="font-nav-title text-nav-title text-on-background">Verify</div>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col px-edge-margin pt-8 pb-safe relative">
+<div class="text-center mb-8">
+<h1 class="text-2xl font-bold text-on-background mb-2">Enter OTP</h1>
+<p class="text-on-surface-variant font-section-header text-section-header">We've sent a 6-digit code to<br/><span class="font-medium text-on-background">+1 (555) 123-4567</span></p>
+</div>
+<!-- OTP Input Boxes -->
+<div class="flex justify-center gap-3 mb-8">
+<input class="w-[46px] h-14 text-center text-2xl font-semibold bg-surface-container rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 text-on-background outline-none transition-all" maxlength="1" readonly="" type="text" value="4"/>
+<input class="w-[46px] h-14 text-center text-2xl font-semibold bg-surface-container rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 text-on-background outline-none transition-all" maxlength="1" readonly="" type="text" value="8"/>
+<!-- Active Box with Caret -->
+<div class="relative w-[46px] h-14 flex items-center justify-center bg-surface rounded-lg border-2 border-primary ring-2 ring-primary/20">
+<span class="h-6 w-0.5 bg-primary blink-caret"></span>
+</div>
+<input class="w-[46px] h-14 text-center text-2xl font-semibold bg-surface-container rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 text-on-background outline-none transition-all" maxlength="1" type="text"/>
+<input class="w-[46px] h-14 text-center text-2xl font-semibold bg-surface-container rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 text-on-background outline-none transition-all" maxlength="1" type="text"/>
+<input class="w-[46px] h-14 text-center text-2xl font-semibold bg-surface-container rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 text-on-background outline-none transition-all" maxlength="1" type="text"/>
+</div>
+<!-- Auto-detect Hint -->
+<div class="flex items-center justify-center gap-2 mb-8 text-secondary bg-secondary-container/20 py-2.5 px-5 rounded-full w-max mx-auto shadow-sm border border-secondary-container/50">
+<span class="material-symbols-outlined text-[16px] text-secondary" style="font-variation-settings: 'FILL' 1;">sms</span>
+<span class="text-[13px] font-medium">Waiting for SMS...</span>
+</div>
+<div class="mt-auto mb-6 text-center">
+<p class="font-section-header text-section-header text-on-surface-variant mb-3">Didn't receive code?</p>
+<button class="font-button-text text-button-text text-primary/60 cursor-not-allowed tracking-wide">
+                    Resend code in <span class="font-bold text-primary/80">0:42</span>
+</button>
+</div>
+<!-- Keyboard Area Mockup -->
+<div class="w-[calc(100%+2rem)] -ml-edge-margin h-[290px] bg-surface-container-high border-t border-outline-variant/30 flex flex-col pt-2 pb-8">
+<!-- Action Row above keyboard -->
+<div class="h-10 flex items-center justify-between px-2 mb-1">
+<div class="flex gap-2"></div>
+<button class="font-button-text text-button-text text-primary px-4 py-1">Done</button>
+</div>
+<div class="grid grid-cols-3 gap-1.5 px-1.5 flex-1 pb-1">
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">1</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">2</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">3</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">4</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">5</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">6</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">7</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">8</button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">9</button>
+<button class="bg-surface-variant/50 rounded-lg text-xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center"></button>
+<button class="bg-surface shadow-sm rounded-lg text-2xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center">0</button>
+<button class="bg-surface-variant/50 rounded-lg text-xl font-medium active:bg-surface-variant transition-colors flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">backspace</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

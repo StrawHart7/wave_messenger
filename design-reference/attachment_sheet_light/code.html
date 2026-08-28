@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat - Attachment Sheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .attachment-sheet-enter {
+            animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased flex justify-center items-center min-h-screen">
+<!-- iPhone Frame -->
+<div class="relative w-[390px] h-[844px] bg-background overflow-hidden shadow-2xl rounded-[40px] border-[8px] border-surface-variant flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface text-primary font-nav-title text-nav-title docked full-width top-0 border-b border-outline-variant flat no shadows transition-colors duration-200 flex justify-between items-center px-edge-margin h-list-item-height w-full z-10">
+<div class="flex items-center gap-3">
+<button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full -ml-2">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="relative w-10 h-10 rounded-full overflow-hidden border border-surface">
+<img alt="User profile picture" class="object-cover w-full h-full" data-alt="A professional headshot of a person, modern corporate style, light mode aesthetic, well-lit, vibrant but professional colors, clean background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8k9Ltk8riAnA-TYk_XiinbJOSndG_ohBbuw3KdgM4ijEgfiZ5PybrN7k_0C2t81qbpG8b-b92Tojtzg6jwH-P5RzmK8h5B7SX3sAvLh86deerDaJOZ7PkqG4sPIdjaN9a_R52GUkfqWDaJ90TkZwB0yg3mrOraaLqNQOgcDVBgWS8hahNUUeN7FcXxmf9Y8caIYy0XvmsW5Vc5cf_0GWPkq1t1uuVo2Hh6WSnwwkcEqTp8xDSf8JR"/>
+</div>
+<span class="font-nav-title text-nav-title text-on-background">Chat</span>
+</div>
+<button class="text-primary hover:bg-surface-variant/50 p-2 rounded-full">
+<span class="material-symbols-outlined">photo_camera</span>
+</button>
+</header>
+<!-- Chat Content (Dimmed) -->
+<main class="flex-1 overflow-y-auto bg-surface-container-lowest p-edge-margin flex flex-col gap-4 pb-24 relative">
+<!-- Overlay to dim background -->
+<div class="absolute inset-0 bg-on-background/40 z-20 transition-opacity duration-300 pointer-events-none"></div>
+<!-- Date Divider -->
+<div class="flex justify-center my-2">
+<span class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-3 py-1 rounded-full shadow-sm">Today</span>
+</div>
+<!-- Incoming Message -->
+<div class="flex flex-col items-start max-w-[75%]">
+<div class="bg-surface text-on-surface font-message-body text-message-body p-3 rounded-2xl rounded-tl-sm shadow-sm border border-outline-variant/30">
+                    Could you send over the latest files when you have a moment?
+                </div>
+<span class="font-timestamp text-timestamp text-on-surface-variant mt-1 ml-1">10:42 AM</span>
+</div>
+<!-- Outgoing Message -->
+<div class="flex flex-col items-end self-end max-w-[75%]">
+<div class="bg-primary-container text-on-primary-container font-message-body text-message-body p-3 rounded-2xl rounded-tr-sm shadow-sm flex items-end gap-2">
+                    Sure thing, getting them together now.
+                    <span class="material-symbols-outlined text-[14px] leading-none opacity-80" data-weight="fill" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+<span class="font-timestamp text-timestamp text-on-surface-variant mt-1 mr-1">10:45 AM</span>
+</div>
+</main>
+<!-- Input Area (Behind Sheet) -->
+<div class="absolute bottom-0 w-full bg-surface p-edge-margin pb-[34px] border-t border-outline-variant/50 z-10 flex items-center gap-2 pointer-events-none">
+<button class="text-on-surface-variant p-2 rounded-full bg-surface-variant/50">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</button>
+<div class="flex-1 bg-surface-variant rounded-full h-10 px-4 flex items-center">
+<span class="text-on-surface-variant/50 font-message-body text-message-body">Message</span>
+</div>
+<button class="text-on-surface-variant p-2 rounded-full bg-surface-variant/50">
+<span class="material-symbols-outlined text-[24px]">mic</span>
+</button>
+</div>
+<!-- Attachment Bottom Sheet -->
+<div class="absolute bottom-0 w-full bg-surface-container rounded-t-[24px] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] z-30 pb-safe attachment-sheet-enter pb-8">
+<div class="w-12 h-1.5 bg-outline-variant/50 rounded-full mx-auto mt-3 mb-6"></div>
+<div class="grid grid-cols-3 gap-y-6 gap-x-4 px-6 pb-6">
+<!-- Gallery -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-primary text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">photo_library</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Gallery</span>
+</button>
+<!-- Camera -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-[#E53935] flex items-center justify-center shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Camera</span>
+</button>
+<!-- Document -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-[#5E35B1] flex items-center justify-center shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">description</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Document</span>
+</button>
+<!-- Contact -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-[#1E88E5] flex items-center justify-center shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Contact</span>
+</button>
+<!-- Location -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-[#43A047] flex items-center justify-center shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Location</span>
+</button>
+<!-- Poll -->
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-[#FFB300] flex items-center justify-center shadow-sm group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">poll</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Poll</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

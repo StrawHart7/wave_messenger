@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Chat with Giulia Rossi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273",
+                        
+                        "chat-bg": "#EFEAE2",
+                        "chat-bubble-out": "#D9FDD3",
+                        "chat-bubble-in": "#FFFFFF",
+                        "chat-meta": "#667781"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px",
+                        "safe-top": "env(safe-area-inset-top, 44px)",
+                        "safe-bottom": "env(safe-area-inset-bottom, 34px)"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro", "sans-serif"],
+                        "nav-title": ["Be Vietnam Pro", "sans-serif"],
+                        "chat-name": ["Be Vietnam Pro", "sans-serif"],
+                        "section-header": ["Be Vietnam Pro", "sans-serif"],
+                        "message-body": ["Be Vietnam Pro", "sans-serif"],
+                        "timestamp": ["Be Vietnam Pro", "sans-serif"],
+                        "button-text": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Specific chat background pattern to simulate WhatsApp-like doodle */
+        .bg-doodle {
+            background-color: #EFEAE2;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm0 40c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm40-40c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm0 40c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        /* Custom scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Bubble tails */
+        .bubble-tail-out::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #D9FDD3 50%, transparent 50%, transparent);
+            border-top-right-radius: 4px;
+        }
+        
+        .bubble-tail-in::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -8px;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(225deg, #FFFFFF 50%, transparent 50%, transparent);
+            border-top-left-radius: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface h-screen w-full flex justify-center items-center overflow-hidden antialiased">
+<!-- iPhone Frame Container -->
+<div class="relative w-full h-full md:w-[393px] md:h-[852px] md:rounded-[54px] md:border-[14px] border-on-background bg-bg-doodle overflow-hidden shadow-2xl flex flex-col mx-auto bg-doodle">
+<!-- Header (TopAppBar equivalent) -->
+<header class="bg-surface text-primary flex justify-between items-center px-edge-margin h-list-item-height w-full z-10 border-b border-outline-variant/30 pt-[env(safe-area-inset-top,0px)] shrink-0 shadow-sm">
+<div class="flex items-center gap-3 w-full">
+<button class="flex items-center text-primary-container p-1 -ml-2 rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-[28px]" data-icon="arrow_back_ios_new">arrow_back_ios_new</span>
+</button>
+<div class="flex items-center gap-3 flex-1 cursor-pointer">
+<div class="relative">
+<img alt="Giulia Rossi" class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-outline-variant/20" data-alt="A detailed, professional corporate headshot of a young Italian woman named Giulia Rossi, with dark wavy hair, warm smile, wearing a modern minimalist white blouse. The lighting is soft and flattering, set against a neutral light grey background, capturing a friendly yet professional mood suitable for a modern utility messenger app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCasQLpNs_1SHKVobNOqarOfXFFnsaKwRCW13Xs3_fZKiWj2ZoMpdw0zYloRihxfCvurvrLyWY_TPmxbvUJgxIvMiuwuPb73w8GAUwaKHV4mTPiSF5CeCBd4uNOuSeWSQU0dxsWGX-gbdYDK6sVwupnxZ9GaydGVpcpNbZF0dMpHnBFS7Sm7W0iraBMgr_Ttpry1Ig4NJydK2mVrG56seTfvJCkWtfc826tBXCtYWI6l1U4NIZFZtGW"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-primary-container border-2 border-surface rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-nav-title text-nav-title text-on-background line-clamp-1">Giulia Rossi</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant line-clamp-1">online</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-primary-container shrink-0">
+<button class="p-1 rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</button>
+<button class="p-1 rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Chat Canvas -->
+<main class="flex-1 overflow-y-auto no-scrollbar p-edge-margin flex flex-col gap-4">
+<!-- Date Separator -->
+<div class="flex justify-center my-2">
+<span class="bg-surface/80 backdrop-blur-sm px-3 py-1 rounded-lg font-timestamp text-timestamp text-on-surface-variant shadow-sm border border-outline-variant/20 uppercase tracking-wider">Today</span>
+</div>
+<!-- Encrypted Notice -->
+<div class="flex justify-center mb-2">
+<div class="bg-[#FDECC8]/90 px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm max-w-[85%] text-center">
+<span class="material-symbols-outlined text-[14px] text-[#54656F]" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-timestamp text-timestamp text-[#54656F]">Messages and calls are end-to-end encrypted. No one outside of this chat, not even us, can read or listen to them.</span>
+</div>
+</div>
+<!-- Incoming Text Bubble -->
+<div class="flex justify-start mb-1">
+<div class="relative bg-chat-bubble-in rounded-lg rounded-tl-none shadow-sm max-w-[80%] p-bubble-padding-v px-bubble-padding-h bubble-tail-in">
+<p class="font-message-body text-message-body text-on-background pb-3">Ciao! Are we still on for the design review at 3 PM? 🎨</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-[10px] text-chat-meta">10:42 AM</span>
+</div>
+</div>
+</div>
+<!-- Outgoing Photo Bubble -->
+<div class="flex justify-end mb-1">
+<div class="relative bg-chat-bubble-out rounded-lg rounded-tr-none shadow-sm max-w-[80%] p-1 bubble-tail-out">
+<img alt="Design mockup" class="rounded-[4px] w-full max-w-[240px] h-auto object-cover" data-alt="A clean, minimalist high-fidelity wireframe mockup of a mobile messenger interface displayed on a sleek laptop screen. The design features a modern corporate aesthetic with smooth curves, distinct flat surface architecture, and bright light-mode colors. The lighting in the room is natural daylight, casting soft shadows on a clean white desk surface. The mood is productive and creative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHCpHqs6-FzWnfLNeOYdxpCJJt2hifKKzRN8iQAY4cvGcR4rJMS7mEAs9ocvjxLMjrPTvPDqmUAl7ksnZpFBVGpkCZOEwDPYbyY8RNpHcs7zekkzsXGiRhqekwzxQNo2gIXy4mMJEUsICNwswp51PsZqP0_c7OFkziUFrKQVbnmmZBJ8oXOqnq9eWqzrY9ARu20LnUXt36JbtlXfYKdz00ipmmmpY1ArFLQGovAUJonh4tcz77CNPW"/>
+<div class="p-2 pb-4">
+<p class="font-message-body text-message-body text-on-background">Yes! Just finishing up the final mocks now. Here's a sneak peek of the new navigation shell.</p>
+</div>
+<div class="absolute bottom-1 right-2 flex items-center gap-1 bg-chat-bubble-out/80 px-1 rounded">
+<span class="font-timestamp text-[10px] text-chat-meta">10:45 AM</span>
+<span class="material-symbols-outlined text-[14px] text-secondary-container" data-icon="done_all">done_all</span>
+</div>
+</div>
+</div>
+<!-- Incoming Voice Note Bubble -->
+<div class="flex justify-start mb-1">
+<div class="relative bg-chat-bubble-in rounded-lg shadow-sm max-w-[80%] min-w-[200px] p-bubble-padding-v px-bubble-padding-h flex items-center gap-3">
+<button class="w-[34px] h-[34px] bg-primary-container rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<div class="flex-1 flex flex-col gap-1">
+<!-- Simulated Waveform -->
+<div class="flex items-center h-6 gap-0.5 w-full">
+<div class="w-1 bg-outline-variant h-2 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-4 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-3 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-5 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-6 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-4 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-2 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-3 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-5 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-2 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-1 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-1 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-2 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-1 rounded-full"></div>
+<div class="w-1 bg-outline-variant h-3 rounded-full"></div>
+</div>
+<div class="flex justify-between items-center w-full">
+<span class="font-timestamp text-[11px] text-chat-meta">0:14</span>
+</div>
+</div>
+<img alt="Giulia's avatar" class="w-[30px] h-[30px] rounded-full object-cover shrink-0" data-alt="A small circular avatar of Giulia Rossi, matching the previous description exactly. Dark wavy hair, white blouse, friendly smile, light grey background, professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLweBmoze-hMXk578NsUy7M9cvtx6pVCnZ7LFyPi1jSaTRShpWB6dPxjrQGT1UI7SHfHWHvxPt9tbnzYDMMRkQcUXOM53ma74M5Zvv65J2fXsH-3UsnDczJ7YMUge44cvDoOAAgkVH4r7oqECPU7FJpjLfQc2CNWrKnQzUciGhpB4IbXmSPnEu6untPioUOL91dZ8LdaAUonNLxFee6kaOn9NjbzAIwHMcC4yfWpxYsuVNdOjSEO01"/>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-[10px] text-chat-meta">10:48 AM</span>
+</div>
+</div>
+</div>
+<!-- Outgoing Text Bubble -->
+<div class="flex justify-end mb-1">
+<div class="relative bg-chat-bubble-out rounded-lg shadow-sm max-w-[80%] p-bubble-padding-v px-bubble-padding-h">
+<p class="font-message-body text-message-body text-on-background pb-3">Got it. I'll make sure to highlight the active state logic during the presentation. See you in a bit!</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-[10px] text-chat-meta">10:50 AM</span>
+<span class="material-symbols-outlined text-[14px] text-secondary-container" data-icon="done_all">done_all</span>
+</div>
+</div>
+</div>
+<!-- Incoming Status Update -->
+<div class="flex justify-start mb-4">
+<div class="relative bg-chat-bubble-in rounded-lg shadow-sm max-w-[80%] p-2 flex items-center gap-2 border border-outline-variant/10">
+<div class="w-10 h-10 bg-surface-variant rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="article">article</span>
+</div>
+<div class="flex flex-col flex-1 pr-6 pb-2">
+<span class="font-chat-name text-chat-name text-on-background">Agenda.pdf</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">2.4 MB • PDF Document</span>
+</div>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-[10px] text-chat-meta">10:52 AM</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Composer / Input Area -->
+<footer class="bg-surface/95 backdrop-blur-md border-t border-outline-variant/20 px-2 py-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] w-full flex items-end gap-2 z-10 shrink-0">
+<div class="flex items-center gap-2 mb-1 pl-1">
+<button class="p-2 text-primary-container hover:bg-surface-variant/50 rounded-full transition-colors shrink-0">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<div class="flex-1 bg-surface-container-lowest border border-outline-variant/40 rounded-[20px] min-h-[40px] flex items-center px-3 py-1 shadow-sm mb-1">
+<input class="flex-1 bg-transparent border-none focus:ring-0 font-message-body text-message-body text-on-background placeholder:text-on-surface-variant py-2 px-1 w-full" placeholder="Message" type="text"/>
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors shrink-0">
+<span class="material-symbols-outlined text-[22px]" data-icon="sticky_note_2">sticky_note_2</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary transition-colors shrink-0">
+<span class="material-symbols-outlined text-[22px]" data-icon="photo_camera">photo_camera</span>
+</button>
+</div>
+<button class="w-[44px] h-[44px] bg-primary-container rounded-full flex items-center justify-center shrink-0 mb-1 shadow-sm hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-primary" data-icon="mic" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+</footer>
+</div>
+</body></html>

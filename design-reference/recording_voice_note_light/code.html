@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Chat - Recording Voice Note</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* iPhone frame styling for demo purposes */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        #app-container {
+            width: 100%;
+            max-width: 430px; /* iPhone 14 Pro Max width */
+            height: 932px; /* iPhone 14 Pro Max height */
+            max-height: 100vh;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #1a1a1a; /* Simulate bezel */
+        }
+
+        /* Safe area simulation */
+        .pt-safe { padding-top: 47px; }
+        .pb-safe { padding-bottom: 34px; }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+        .animate-pulse-red {
+            animation: pulse-red 1.5s infinite ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .slide-text {
+            background: linear-gradient(90deg, #6c7b6b 0%, #131d23 50%, #6c7b6b 100%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shimmer 3s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-variant font-message-body">
+<div class="bg-surface" id="app-container">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center px-edge-margin h-list-item-height w-full pt-safe flex-shrink-0 z-10 transition-colors duration-200">
+<div class="flex items-center gap-stack-md">
+<button class="text-primary hover:bg-surface-variant/50 rounded-full p-2 -ml-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex items-center gap-stack-sm">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" data-alt="A professional headshot of a young woman with natural light, modern casual corporate style, neutral background, crisp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXqjyhcIyx36eCuISM6ya_M-e9GTnGrUfmSqKACC3l077NDW8VHGLn0I8qQ1v_RKJN8Upp_DCIK9Uz22L2_83ueXOaA9_j_QrUJekW3clfmDmlX4ZV7NWtPkUvB9XiFYAPWTf7l7a1o4izRC4xa0tnslTDN1EOA0oslhB76yoEMvWrpsltYEV24cIvVNQjVBD2ulhHsnNY77Z7OKuWswwR8SDb84WNsNK9i6LjpkIgWXj73mP5vG9t"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-primary-container rounded-full border-2 border-surface"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-nav-title text-nav-title text-on-surface">Alex Johnson</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">online</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-stack-sm">
+<button class="text-primary hover:bg-surface-variant/50 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</button>
+<button class="text-primary hover:bg-surface-variant/50 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</button>
+</div>
+</header>
+<!-- Chat Canvas (Scrollable) -->
+<main class="flex-1 overflow-y-auto px-edge-margin py-stack-md flex flex-col gap-stack-md bg-[#efeae2]">
+<!-- Date Header -->
+<div class="flex justify-center my-2">
+<span class="bg-surface-container-high px-3 py-1 rounded-full font-timestamp text-timestamp text-on-surface-variant shadow-sm">Today</span>
+</div>
+<!-- Incoming Message -->
+<div class="flex flex-col items-start max-w-[80%] self-start">
+<div class="bg-surface text-on-surface rounded-2xl rounded-tl-sm px-bubble-padding-h py-bubble-padding-v shadow-sm relative">
+<p class="font-message-body text-message-body pr-10">Hey! Did you check out the new design files I sent over earlier?</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant">10:42 AM</span>
+</div>
+</div>
+</div>
+<!-- Outgoing Message -->
+<div class="flex flex-col items-end max-w-[80%] self-end">
+<div class="bg-[#d9fdd3] text-on-surface rounded-2xl rounded-tr-sm px-bubble-padding-h py-bubble-padding-v shadow-sm relative">
+<p class="font-message-body text-message-body pr-14">Yes, looking at them now. The layout seems much cleaner.</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant text-opacity-70">10:45 AM</span>
+<span class="material-symbols-outlined text-[#53bdeb] text-[14px]" data-icon="done_all" style="font-variation-settings: 'wght' 600;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Incoming Message -->
+<div class="flex flex-col items-start max-w-[80%] self-start">
+<div class="bg-surface text-on-surface rounded-2xl rounded-tl-sm px-bubble-padding-h py-bubble-padding-v shadow-sm relative">
+<p class="font-message-body text-message-body pr-10">Great. Can you record a quick voice note with your initial thoughts? Easier than typing it all out.</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant">10:46 AM</span>
+</div>
+</div>
+</div>
+<!-- Spacer to ensure input field doesn't cover last message -->
+<div class="h-10"></div>
+</main>
+<!-- Recording Interface (Replaces Composer) -->
+<div class="bg-surface border-t border-outline-variant/30 pb-safe pt-2 px-2 flex flex-col justify-end flex-shrink-0 relative">
+<!-- Lock icon container (slides up to lock) -->
+<div class="absolute right-4 -top-16 w-12 flex flex-col items-center justify-end h-16 pointer-events-none">
+<div class="bg-surface rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-2 flex flex-col items-center border border-outline-variant/20 mb-2 transform -translate-y-2 opacity-80">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="lock">lock</span>
+<span class="material-symbols-outlined text-outline text-lg animate-bounce mt-1" data-icon="keyboard_arrow_up">keyboard_arrow_up</span>
+</div>
+</div>
+<div class="flex items-center justify-between w-full h-[52px] bg-surface rounded-full px-4 border border-transparent">
+<!-- Recording Indicator & Timer -->
+<div class="flex items-center gap-2 flex-1">
+<div class="w-3 h-3 bg-error rounded-full animate-pulse-red shadow-[0_0_8px_rgba(186,26,26,0.6)]"></div>
+<span class="font-chat-name text-chat-name text-on-surface w-12">0:07</span>
+</div>
+<!-- Slide to cancel text -->
+<div class="flex-1 flex justify-center items-center gap-1 opacity-80">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_left">chevron_left</span>
+<span class="font-message-body text-message-body slide-text whitespace-nowrap">slide to cancel</span>
+</div>
+<!-- Spacer to balance layout -->
+<div class="flex-1 flex justify-end">
+<!-- The mic button being held -->
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center shadow-md transform scale-125 z-10 mr-[-8px]">
+<span class="material-symbols-outlined text-on-primary filled text-2xl" data-icon="mic">mic</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

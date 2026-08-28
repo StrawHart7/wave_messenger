@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Profile Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#283238",
+                    "on-background": "#131d23",
+                    "on-tertiary-fixed": "#00210b",
+                    "surface-dim": "#d1dbe4",
+                    "secondary": "#006686",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#005773",
+                    "on-secondary-fixed": "#001e2b",
+                    "on-tertiary-fixed-variant": "#005225",
+                    "outline-variant": "#bbcbb9",
+                    "tertiary-fixed-dim": "#4ee07f",
+                    "surface": "#f5faff",
+                    "on-tertiary-container": "#005426",
+                    "secondary-fixed-dim": "#70d2ff",
+                    "tertiary": "#006d33",
+                    "on-surface-variant": "#3c4a3d",
+                    "surface-container": "#e5eff8",
+                    "surface-container-low": "#eaf5fe",
+                    "secondary-container": "#68cffe",
+                    "inverse-on-surface": "#e8f2fb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#d9e4ec",
+                    "outline": "#6c7b6b",
+                    "primary-fixed": "#66ff8e",
+                    "on-secondary": "#ffffff",
+                    "background": "#f5faff",
+                    "primary-container": "#25d366",
+                    "surface-container-high": "#dfeaf2",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#006d2f",
+                    "primary-fixed-dim": "#3de273",
+                    "on-primary-fixed-variant": "#005322",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#005523",
+                    "secondary-fixed": "#c0e8ff",
+                    "tertiary-container": "#3bd172",
+                    "surface-container-highest": "#d9e4ec",
+                    "tertiary-fixed": "#6efe98",
+                    "on-surface": "#131d23",
+                    "on-secondary-fixed-variant": "#004d66",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#002109",
+                    "surface-tint": "#006d2f",
+                    "surface-bright": "#f5faff",
+                    "inverse-primary": "#3de273"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "avatar-size-lg": "48px",
+                    "stack-md": "12px",
+                    "stack-xs": "4px",
+                    "bubble-padding-v": "8px",
+                    "stack-sm": "8px",
+                    "edge-margin": "16px",
+                    "avatar-size-sm": "32px",
+                    "list-item-height": "72px",
+                    "bubble-padding-h": "12px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Be Vietnam Pro"],
+                    "nav-title": ["Be Vietnam Pro"],
+                    "chat-name": ["Be Vietnam Pro"],
+                    "section-header": ["Be Vietnam Pro"],
+                    "message-body": ["Be Vietnam Pro"],
+                    "timestamp": ["Be Vietnam Pro"],
+                    "button-text": ["Be Vietnam Pro"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "nav-title": ["17px", {"lineHeight": "22px", "fontWeight": "600"}],
+                    "chat-name": ["16px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "section-header": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "message-body": ["15px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "timestamp": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                    "button-text": ["14px", {"lineHeight": "18px", "fontWeight": "600"}]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f0f2f5; /* Subtle backdrop for the phone frame */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Phone Frame Simulation */
+        .phone-frame {
+            width: 100%;
+            max-width: 400px; /* Typical mobile width */
+            height: 100vh;
+            max-height: 850px; /* Typical mobile height */
+            background-color: theme('colors.background');
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        @media (min-width: 450px) {
+            .phone-frame {
+                height: 850px;
+                border-radius: 40px;
+                border: 12px solid #1c1c1c;
+            }
+            /* Simulated notch */
+            .phone-frame::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 150px;
+                height: 30px;
+                background-color: #1c1c1c;
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+                z-index: 100;
+            }
+        }
+        
+        /* Floating Action Button (FAB) specific minimal shadow */
+        .shadow-fab {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .input-active {
+            border-bottom-color: theme('colors.primary-container') !important;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body>
+<div class="phone-frame bg-background text-on-background">
+<!-- Header (Transactional/Setup - No standard Nav) -->
+<header class="pt-16 pb-4 px-edge-margin flex items-center justify-center">
+<h1 class="font-nav-title text-2xl font-bold text-on-background">Profile Info</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col items-center px-edge-margin pt-6 pb-safe">
+<p class="font-message-body text-message-body text-on-surface-variant text-center mb-10 max-w-[280px]">
+            Please provide your name and an optional profile photo.
+        </p>
+<!-- Avatar Picker -->
+<div class="relative mb-12 group cursor-pointer" id="avatar-picker">
+<div class="w-32 h-32 rounded-full bg-surface-variant border-2 border-outline-variant flex items-center justify-center overflow-hidden transition-all duration-200 hover:bg-surface-dim shadow-sm group-hover:shadow-md">
+<span class="material-symbols-outlined text-6xl text-on-surface-variant opacity-50" style="font-variation-settings: 'FILL' 0;">
+                    person
+                </span>
+<!-- Placeholder for selected image -->
+<img alt="Profile Preview" class="absolute inset-0 w-full h-full object-cover hidden" data-alt="A macro shot of a sleek, modern smartphone camera lens reflecting soft studio light, set against a smooth, light grey background. The focus is incredibly sharp on the glass elements, suggesting high-quality optics and technology, fitting a minimalist tech aesthetic." id="avatar-preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_yriP2NXL2v4zvFcZEeCuK0POEl73XaBqhn3C-rF3qqKO1WmO3Hbl6TeFRj7I7DtOEY_pviMcDp8Guee8IANXGOfD0yKdLjfjL5N4EyIJmqQEgWKN6YygGUXVcYvBJSZwcmTSjnlM9mjGA-EH7w1rtRV0eWaLgVxgu_fVLxr-BG-hdhLHvCpzgeo-lDBVV4KwXj34LEgemr2o_u1-ZR8WTKQaoyB6tNmLhMz-LT_9YwItRrwsgbOC"/>
+</div>
+<!-- Camera Badge -->
+<div class="absolute bottom-0 right-0 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center border-4 border-background shadow-sm transform transition-transform duration-200 group-hover:scale-110">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">
+        photo_camera
+    </span>
+</div>
+</div>
+<!-- Name Input Area -->
+<div class="w-full max-w-[320px] mb-8 flex flex-col relative">
+<div class="flex items-center border-b-2 border-outline-variant focus-within:border-primary transition-colors duration-200 pb-2">
+<input autocomplete="name" class="flex-1 bg-transparent border-none p-2 font-nav-title text-xl font-medium text-on-background focus:ring-0 placeholder-on-surface-variant/40" id="name-input" placeholder="Type your name here" type="text"/>
+<!-- Emoji Icon (Decorative/Static for UI preview) -->
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 rounded-full flex-shrink-0">
+<span class="material-symbols-outlined text-2xl">sentiment_satisfied</span>
+</button>
+</div>
+</div>
+<!-- Continue Button -->
+<div class="mt-auto mb-10 w-full flex justify-center">
+<button class="bg-primary-container text-on-primary-container py-3.5 px-10 rounded-full font-nav-title text-nav-title flex items-center justify-center gap-2 hover:bg-primary hover:text-on-primary transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-fab" disabled="" id="continue-btn">
+                Next
+            </button>
+</div>
+</main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nameInput = document.getElementById('name-input');
+        const continueBtn = document.getElementById('continue-btn');
+        const avatarPicker = document.getElementById('avatar-picker');
+        const avatarPreview = document.getElementById('avatar-preview');
+
+        // Simple validation to enable/disable the Next button
+        nameInput.addEventListener('input', (e) => {
+            if (e.target.value.trim().length > 0) {
+                continueBtn.removeAttribute('disabled');
+            } else {
+                continueBtn.setAttribute('disabled', 'true');
+            }
+        });
+
+        // Simulate avatar selection (just shows the placeholder image for this mockup)
+        avatarPicker.addEventListener('click', () => {
+            // In a real app, this would open an image picker.
+            // Here, we'll just toggle the visibility of the placeholder image to simulate selection.
+            if (avatarPreview.classList.contains('hidden')) {
+                avatarPreview.classList.remove('hidden');
+                // Optional: add a subtle pulse effect to indicate success
+                avatarPreview.parentElement.classList.add('animate-pulse');
+                setTimeout(() => avatarPreview.parentElement.classList.remove('animate-pulse'), 500);
+            }
+        });
+        
+        // Input focus styling
+        nameInput.addEventListener('focus', function() {
+            this.parentElement.classList.add('input-active');
+        });
+        nameInput.addEventListener('blur', function() {
+            this.parentElement.classList.remove('input-active');
+        });
+    });
+</script>
+</body></html>

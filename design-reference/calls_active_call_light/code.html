@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Calls &amp; Active Video Call</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px",
+                        "safe-bottom": "env(safe-area-inset-bottom, 20px)",
+                        "safe-top": "env(safe-area-inset-top, 44px)"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .video-gradient {
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-background h-screen w-screen overflow-hidden flex font-message-body selection:bg-primary/20">
+<!-- Split Layout Container (Mobile / Desktop responsive) -->
+<div class="flex w-full h-full relative">
+<!-- LEFT PANE: Calls List (Hidden on very small screens if active call is main intent, but prompt asks for split frame. Will force split on tablet/desktop, layer on mobile) -->
+<div class="hidden md:flex flex-col w-1/3 min-w-[320px] max-w-[400px] bg-surface border-r border-outline-variant h-full relative z-10">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-edge-margin h-list-item-height w-full bg-surface border-b border-outline-variant sticky top-0 z-20 pt-safe-top">
+<div class="flex items-center gap-stack-md">
+<button class="w-avatar-size-sm h-avatar-size-sm rounded-full overflow-hidden bg-surface-variant flex items-center justify-center hover:bg-surface-variant/50 transition-colors duration-200">
+<img class="w-full h-full object-cover" data-alt="A small circular avatar placeholder image showing a smiling young professional woman with short brown hair against a light grey background, captured in high key corporate lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAejOiCPWylh3STuwzZ9cVje9oLvyuBQbjORXZOsPWWOAAC5OCuiXy-D_gSvW6SSCOIyi_pebg2DI66eV3q-FEWHjeBmFL02NY3iEqH49TxsjmBkOMLR6lmX5UV7J9FLBFz-ESKn8aHX3yrqtBOINdo2_1-fS6JozNwVbEdiLmJuWS7Ujan1E_j28oI3IQJzuK27YLX6XhXlVOotC9EsLd2Ra0yAgpG0twXqbZfflfvHqVVZhZn4r1S"/>
+</button>
+<h1 class="font-nav-title text-nav-title text-primary">Calls</h1>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-primary hover:bg-surface-variant/50 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">add_call</span>
+</button>
+</div>
+</header>
+<!-- Calls List Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar pb-[calc(100px+env(safe-area-inset-bottom))]">
+<div class="px-edge-margin py-stack-sm flex justify-between items-center mt-2">
+<h2 class="font-section-header text-section-header text-on-surface-variant">Recent</h2>
+</div>
+<!-- Call Item 1 (Active) -->
+<div class="flex items-center px-edge-margin py-stack-sm bg-surface-variant/30 h-list-item-height cursor-pointer hover:bg-surface-variant/50 transition-colors duration-200 relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="relative">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-surface-variant" data-alt="A portrait of a young man with glasses and a beard, smiling slightly, dressed in a casual blue shirt, set against a blurred outdoor background during daytime." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2dOSiMcY0r2gqwCprxkyOTMRY8aVhoe-ZwUkhg5kuIQa4KZgP9q2IVU3j4XMwq92dL4XvWNjYI_XxCFFuZ4uJ5dI5WgI546c9zJ5Db-cjOue4aDN8fxKpchvQbwmr5KFe-recBIIx8gQG4gPYtWxzm88lnyO2JLdYJiLC8UA398AZl2DFf3r8KzY4ylL6V7ezMDn7o4E41-oAAeCycl1HgIJlL9Gz-4dumCWMd8Zfiw2f5vadrVQ3"/>
+</div>
+<div class="ml-stack-md flex-1 flex flex-col justify-center">
+<span class="font-chat-name text-chat-name text-on-background text-primary">Alex Chen</span>
+<div class="flex items-center gap-1 mt-stack-xs">
+<span class="material-symbols-outlined text-[14px] text-primary">call_made</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">Ongoing call...</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-timestamp text-timestamp text-primary">07:42</span>
+<button class="text-primary hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined filled">videocam</span>
+</button>
+</div>
+</div>
+<!-- Call Item 2 -->
+<div class="flex items-center px-edge-margin py-stack-sm h-list-item-height cursor-pointer hover:bg-surface-variant/50 transition-colors duration-200">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-surface-variant" data-alt="A close up photo of a stylish middle-aged woman wearing a bright yellow scarf and dark sunglasses, standing in front of a modern architectural building." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACZLpm92wYCwyREF3K2y3JOslUwEiRY8VWLt19XMdJH1-SVH_Q3AwL7Y7uqjkPCFBjmDB-8JjQ9LhGtBk0nUYwKB0Kisoi3VkHavjTJipKM0W8RiK3khKoor7OMAYZOs0PNq5jhL7-aoXaoyzI99Bt1Mn4kAKKrcDm_-jXPuGpFQ8AycfBDYzxqwwlvVTy8EfT8PX8jkEVbO_DGySwkX8HjTgzm6hSVF31Z4NZlqCSWSbzEtPHW4eE"/>
+<div class="ml-stack-md flex-1 flex flex-col justify-center">
+<span class="font-chat-name text-chat-name text-on-background">Sarah Jenkins</span>
+<div class="flex items-center gap-1 mt-stack-xs">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">call_received</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">Today, 10:30 AM</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</div>
+<!-- Call Item 3 (Missed) -->
+<div class="flex items-center px-edge-margin py-stack-sm h-list-item-height cursor-pointer hover:bg-surface-variant/50 transition-colors duration-200">
+<img class="w-avatar-size-lg h-avatar-size-lg rounded-full object-cover border border-surface-variant" data-alt="A professional headshot of a mature man with grey hair wearing a dark suit and white shirt, looking directly at the camera with a neutral expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA593rInBH5KPL1JgivtScL0tawgedtW1Zg-m4-N7EIorVqgZYS0B1albtFybFQt2TMT1H1gW2yiZMDDRbu0z6tKGcc9-Zum98RhYI_DPhc4vgcmoSrf1UfloVolUVc-fSBGAUWe72VCEEi45bOvkYtq4XZlX-CQbvAJLkfvTCjDXVj7fF9yY8fxTDpEqBk05SE43A2TLgejirBAQYra_MAp0asI1Zkk2qs8MtWBz8il8ZBIexjs_6l"/>
+<div class="ml-stack-md flex-1 flex flex-col justify-center">
+<span class="font-chat-name text-chat-name text-error">David Wallace</span>
+<div class="flex items-center gap-1 mt-stack-xs">
+<span class="material-symbols-outlined text-[14px] text-error">call_missed</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">Yesterday, 4:15 PM</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+</div>
+</div>
+<!-- Call Item 4 -->
+<div class="flex items-center px-edge-margin py-stack-sm h-list-item-height cursor-pointer hover:bg-surface-variant/50 transition-colors duration-200">
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-chat-name border border-surface-variant">
+                        M
+                    </div>
+<div class="ml-stack-md flex-1 flex flex-col justify-center">
+<span class="font-chat-name text-chat-name text-on-background">Marketing Sync</span>
+<div class="flex items-center gap-1 mt-stack-xs">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">call_made</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">Monday, 2:00 PM</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Only visible if we consider this a top-level destination, which it is based on prompt "Calls tab") -->
+<nav class="fixed md:absolute bottom-0 w-full z-50 flex justify-around items-center pt-2 pb-safe px-4 bg-surface-container border-t border-outline-variant h-[calc(64px+env(safe-area-inset-bottom))]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-label-sm text-label-sm mt-1">Chats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">update</span>
+<span class="font-label-sm text-label-sm mt-1">Updates</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-sm text-label-sm mt-1">Communities</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-surface-variant/50 active:scale-95 transition-transform p-2 rounded-xl px-4" href="#">
+<span class="material-symbols-outlined filled">call</span>
+<span class="font-label-sm text-label-sm mt-1">Calls</span>
+</a>
+</nav>
+</div>
+<!-- RIGHT PANE: Active Video Call (Full bleed on mobile, flexible on desktop) -->
+<div class="flex-1 h-full relative bg-inverse-surface flex flex-col w-full absolute inset-0 md:relative z-20 md:z-0">
+<!-- Main Video Feed (Full Bleed Background) -->
+<div class="absolute inset-0 w-full h-full overflow-hidden bg-black">
+<div class="w-full h-full bg-cover bg-center" data-alt="A full screen video call view showing a young man sitting in a brightly lit modern cafe, holding a coffee cup and looking directly at the camera. The setting features large windows, exposed brick walls, and a warm, inviting atmosphere with blurred background elements." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDALF4WcFXPCwhoHTJm7g8Svk-gIU3KjNXgSFlenmxhV_a9Nlp1pISahUxNTO8CGpfrfPmL5y21xyuamMBem7JJX1R6OYpzR17383xC2Ug_qL-81w-X33CVbq65NdAm1cnX2AGFfw97PMzxgTyGE87nPiyphM9ARZj-3MJC1QkM4qe-0dqPSiTPBYZEVaYc_m2BuaUNyoFRr-ZPlEb5Awyx2KeTDTODB8xVMld4O7xhg9iaxCmIKBUL')"></div>
+<div class="absolute inset-0 video-gradient pointer-events-none"></div>
+</div>
+<!-- Top Controls (Timer & Expand/Collapse) -->
+<div class="relative z-30 pt-safe-top px-edge-margin mt-4 flex justify-between items-start w-full">
+<!-- Mobile only back button to return to list if overlaid -->
+<button class="md:hidden w-10 h-10 rounded-full bg-inverse-surface/40 backdrop-blur-md flex items-center justify-center text-white active:scale-95 transition">
+<span class="material-symbols-outlined">keyboard_arrow_left</span>
+</button>
+<div class="hidden md:block"></div> <!-- Spacer for flex layout -->
+<div class="flex flex-col items-center">
+<span class="font-chat-name text-chat-name text-white drop-shadow-md">Alex Chen</span>
+<div class="flex items-center gap-1 bg-inverse-surface/40 backdrop-blur-md px-3 py-1 rounded-full mt-1">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="font-timestamp text-timestamp text-white font-medium">07:42</span>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-inverse-surface/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-inverse-surface/60 active:scale-95 transition">
+<span class="material-symbols-outlined">fullscreen</span>
+</button>
+</div>
+<!-- PIP Self-View -->
+<div class="absolute top-[120px] right-edge-margin w-28 h-40 rounded-xl overflow-hidden border-2 border-surface-variant/50 shadow-lg z-30 bg-black cursor-pointer hover:border-white transition-colors">
+<img class="w-full h-full object-cover" data-alt="A small picture-in-picture video feed showing a young woman wearing a white headset, sitting in a home office with a minimalist desk setup and a small plant in the background, lit by a soft ring light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrXQK3LyNqN6RDTw0a7XZdJoPiRqNkp9COBB64am0C-g7q8RcCvCUOIHLVGwWIF2e6D1wZk-U4VSis8iDDXC-o89nr6cFGsUhBpN7Ps0P8Go7ifHk6Ab_0KDtbLidIqeicYz1ZMpjFf0NaezvIeyYNs6UDd25QVW4TYk4CkToSPdGYlZplQ1AZPBAP3OquGOIMqAmMM3s-_lxx8iS42KU-44PTg4sCi8RPRy_U-8nwDdJOW-CumxZG"/>
+</div>
+<!-- Bottom Control Bar -->
+<div class="relative z-30 mt-auto pb-safe px-edge-margin pb-8 flex flex-col items-center">
+<!-- Action Buttons -->
+<div class="flex items-center justify-center gap-6 w-full max-w-sm mb-4">
+<!-- Flip Camera -->
+<button class="w-12 h-12 rounded-full bg-inverse-surface/60 backdrop-blur-md flex items-center justify-center text-white hover:bg-inverse-surface/80 active:scale-95 transition-transform shadow-md">
+<span class="material-symbols-outlined">flip_camera_ios</span>
+</button>
+<!-- Video Toggle -->
+<button class="w-12 h-12 rounded-full bg-inverse-surface/60 backdrop-blur-md flex items-center justify-center text-white hover:bg-inverse-surface/80 active:scale-95 transition-transform shadow-md">
+<span class="material-symbols-outlined filled">videocam</span>
+</button>
+<!-- Mute Toggle (Active state example - muted) -->
+<button class="w-12 h-12 rounded-full bg-surface text-on-surface flex items-center justify-center hover:bg-surface-variant active:scale-95 transition-transform shadow-md">
+<span class="material-symbols-outlined">mic_off</span>
+</button>
+<!-- End Call (Prominent Red) -->
+<button class="w-14 h-14 rounded-full bg-error text-white flex items-center justify-center hover:bg-error/90 active:scale-90 transition-transform shadow-lg shadow-error/30">
+<span class="material-symbols-outlined text-[28px] filled">call_end</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

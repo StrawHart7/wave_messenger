@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native builds
+/ios/
+/android/
+*.ipa
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+# Metro
+.metro-health-check*
+.metro-cache/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Supabase
+supabase/.temp/
+supabase/.branches/
+
+# Testing
+coverage/
+
+# Logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+
+# Build verification output (screenshots taken during the iteration loop)
+screenshots/

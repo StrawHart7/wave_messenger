@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Phone Number Entry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Custom styles for select to hide default arrow and use custom one */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background h-screen w-full flex justify-center items-center overflow-hidden">
+<!-- Mobile Device Mockup Container -->
+<div class="relative w-full h-full max-w-[430px] max-h-[932px] bg-surface flex flex-col mx-auto overflow-hidden shadow-2xl md:rounded-[3rem] md:border-[14px] md:border-black md:h-[795px]">
+<!-- Status Bar (Simulated) -->
+<div class="w-full flex justify-between items-center px-6 pt-3 pb-2 z-50 bg-surface">
+<div class="font-timestamp text-timestamp font-medium tracking-wide">9:41</div>
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-[16px] leading-none" data-weight="fill" style="font-variation-settings: 'FILL' 1;">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[16px] leading-none">wifi</span>
+<span class="material-symbols-outlined text-[16px] leading-none" data-weight="fill" style="font-variation-settings: 'FILL' 1;">battery_full</span>
+</div>
+</div>
+<!-- Top App Bar -->
+<header class="w-full h-list-item-height px-edge-margin flex items-center justify-between z-40 bg-surface">
+<button class="w-10 h-10 flex items-center justify-start text-primary hover:opacity-80 active:opacity-70 transition-opacity">
+<!-- Ghost button for back -->
+<span class="font-button-text text-button-text">Cancel</span>
+</button>
+<h1 class="font-nav-title text-nav-title text-on-background text-center flex-1 pr-10">Phone number</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col px-edge-margin pt-6 overflow-y-auto">
+<div class="text-center mb-10">
+<p class="font-message-body text-message-body text-on-surface-variant">
+                    Please confirm your country code and enter your phone number.
+                </p>
+</div>
+<!-- Input Form Area -->
+<div class="w-full space-y-0 relative">
+<!-- Top / Bottom separator container -->
+<div class="border-y border-outline-variant/50 w-full bg-surface-container-lowest">
+<!-- Country Selector -->
+<div class="relative w-full h-14 flex items-center border-b border-outline-variant/50">
+<select class="w-full h-full pl-4 pr-10 py-0 bg-transparent border-none text-[17px] font-medium text-primary focus:ring-0 cursor-pointer outline-none z-10" id="countrySelect">
+<option selected="" value="IT">Italy</option>
+<option value="US">United States</option>
+<option value="UK">United Kingdom</option>
+<option value="FR">France</option>
+<option value="DE">Germany</option>
+<option value="ES">Spain</option>
+</select>
+<div class="absolute right-0 inset-y-0 flex items-center pr-4 pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+<!-- Phone Number Input -->
+<div class="flex w-full h-14 items-center">
+<!-- Country Code Display -->
+<div class="flex items-center justify-center border-r border-outline-variant/50 pr-4 pl-0 h-full">
+<span class="text-[20px] font-medium text-on-surface-variant w-16 text-center" id="countryCodeDisplay">+39</span>
+</div>
+<!-- Number Field -->
+<div class="flex-1 h-full relative">
+<input autocomplete="tel" autofocus="" class="w-full h-full bg-transparent border-none px-4 py-0 text-[20px] font-medium text-on-background placeholder-on-surface-variant/40 focus:ring-0 outline-none" id="phoneNumberInput" placeholder="Phone number" type="tel"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Contextual Information / Legal -->
+<div class="mt-8 text-center px-4">
+<p class="font-label-sm text-[12px] leading-[18px] text-on-surface-variant">
+                    Carrier SMS charges may apply. By tapping "Next", you agree to our <a class="text-primary font-medium hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-medium hover:underline" href="#">Privacy Policy</a>.
+                </p>
+</div>
+<div class="flex-1"></div> <!-- Spacer to push button down -->
+</main>
+<!-- Bottom Action Area -->
+<div class="w-full px-edge-margin pb-safe pt-4 mb-8 bg-surface">
+<button class="w-full bg-primary-container text-on-primary-container h-14 rounded-full font-button-text text-button-text flex items-center justify-center transition-all duration-200 active:scale-[0.98] hover:bg-[#20bd59] hover:shadow-md disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-primary-container disabled:hover:shadow-none" disabled="" id="nextBtn">
+                Next
+            </button>
+</div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const countrySelect = document.getElementById('countrySelect');
+            const countryCodeDisplay = document.getElementById('countryCodeDisplay');
+            const phoneInput = document.getElementById('phoneNumberInput');
+            const nextBtn = document.getElementById('nextBtn');
+
+            // Map of countries to codes (simplified for example)
+            const countryCodes = {
+                'IT': '+39',
+                'US': '+1',
+                'UK': '+44',
+                'FR': '+33',
+                'DE': '+49',
+                'ES': '+34'
+            };
+
+            // Update country code when select changes
+            countrySelect.addEventListener('change', (e) => {
+                const code = countryCodes[e.target.value] || '+1';
+                countryCodeDisplay.textContent = code;
+                phoneInput.focus();
+            });
+
+            // Basic validation to enable 'Next' button
+            phoneInput.addEventListener('input', (e) => {
+                // Remove non-numeric characters for check
+                const numericValue = e.target.value.replace(/\D/g, '');
+                
+                // Simple check: length greater than 5 enables the button
+                if (numericValue.length > 5) {
+                    nextBtn.removeAttribute('disabled');
+                } else {
+                    nextBtn.setAttribute('disabled', 'true');
+                }
+            });
+
+            // Action on next button
+            nextBtn.addEventListener('click', () => {
+                if(!nextBtn.hasAttribute('disabled')){
+                    // Simulate loading state briefly
+                    const originalText = nextBtn.textContent;
+                    nextBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+                    setTimeout(() => {
+                        nextBtn.textContent = originalText;
+                        alert('Proceeding to next step (Verification Code) with ' + countryCodeDisplay.textContent + ' ' + phoneInput.value);
+                    }, 800);
+                }
+            });
+            
+            // Initial focus
+            setTimeout(() => phoneInput.focus(), 300);
+        });
+    </script>
+</body></html>

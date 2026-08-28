@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Incoming Call</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pulse-ring {
+            animation: pulse 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 20px rgba(37, 211, 102, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen w-screen overflow-hidden flex justify-center items-center antialiased">
+<!-- iPhone Frame Container -->
+<div class="relative w-full max-w-[430px] h-full max-h-[932px] sm:h-[844px] sm:w-[390px] sm:rounded-[3rem] sm:border-[8px] sm:border-inverse-surface overflow-hidden shadow-2xl bg-surface flex flex-col">
+<!-- Background Layer -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center bg-no-repeat scale-110 filter blur-2xl opacity-60" data-alt="A brightly lit, modern portrait photography background featuring a young woman named Giulia Rossi. The background is extremely blurred and out of focus, creating a soft, ethereal light-mode aesthetic with gentle hues of pale green and soft white. The mood is welcoming, professional, and slightly energetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDaELDV9hzPSg6nn3KS8vIwYRUyRw7-LM8pu5U9r2dHP69IIY5WhoRNF9VYe8P74Tses3mgz_oxpFj68Z7y2WNOniqJU4RKTRtjUiR0zLnktT6hiLDQ-EjEfvE1M3f3U9WAbxlepXlH_NSswX-UMkkWcB8DeCWNpt8AzBxmUEaTS4hxMYTp5xkAkVEMK0Rc7AB6GkzITa6l5qc0vl3hwtlb8MtD8UTWL2itlrOUgEBk29U6J-Ghelee')"></div>
+<!-- Gradient Overlay for legibility -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface/40 via-transparent to-surface/90"></div>
+</div>
+<!-- Content Canvas -->
+<div class="relative z-10 flex flex-col h-full w-full">
+<!-- Safe Area Top -->
+<div class="h-14 w-full flex justify-between items-center px-6 pt-2">
+<!-- Status bar placeholder elements -->
+<span class="font-timestamp text-timestamp text-on-surface font-semibold">9:41</span>
+<div class="flex space-x-2">
+<span class="material-symbols-outlined text-[16px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[16px]">wifi</span>
+<span class="material-symbols-outlined text-[16px]">battery_full</span>
+</div>
+</div>
+<!-- Caller Info Section -->
+<div class="flex-1 flex flex-col items-center justify-center mt-12 mb-auto px-edge-margin space-y-6">
+<!-- Avatar with Pulse Effect -->
+<div class="relative flex items-center justify-center">
+<!-- Decorative rings -->
+<div class="absolute w-[180px] h-[180px] rounded-full border border-primary-container/20 pulse-ring"></div>
+<div class="absolute w-[150px] h-[150px] rounded-full border border-primary-container/40"></div>
+<img class="w-[120px] h-[120px] rounded-full object-cover shadow-xl border-4 border-surface relative z-10" data-alt="A professional, high-quality circular portrait photograph of a young woman named Giulia Rossi, looking directly at the camera with a friendly smile. The lighting is bright and clean, fitting a modern communication app light mode aesthetic. She has warm features and is set against a subtle, light background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7wuKyhsw6hoKiE5z87xZPlwaz4vxKI_pzbQ3of9_RJdpHHzSxS52RwZEw7_FomTXHhegvlx2T2465Llks_NgbpYzXQa5TwBnMgtXFQIT3s9KCoQjRQTQYUT77zPlBq8TR69oQlrVwgMKLnxSClom1jJvEntpvE9w_YN3-NwVvM-7KFGJGOanE3nwfy1usbJSwEmKTmdeO8zonxNciW5gT0IoljgyURZ_uiM4MlKSbmANOz9GLLxNX"/>
+</div>
+<!-- Text Info -->
+<div class="text-center flex flex-col items-center space-y-2 mt-stack-md">
+<h1 class="font-nav-title text-[32px] font-semibold text-on-background tracking-tight">Giulia Rossi</h1>
+<div class="flex items-center space-x-2 bg-surface-variant/50 backdrop-blur-sm px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">videocam</span>
+<span class="font-message-body text-message-body text-on-surface-variant">Tide video call</span>
+</div>
+</div>
+</div>
+<!-- Additional Options (Remind Me / Message) -->
+<div class="w-full px-12 pb-8 flex justify-between items-center">
+<button class="flex flex-col items-center space-y-1 text-on-surface-variant hover:text-on-surface transition-colors">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined">alarm</span>
+</div>
+<span class="font-label-sm text-label-sm">Remind Me</span>
+</button>
+<button class="flex flex-col items-center space-y-1 text-on-surface-variant hover:text-on-surface transition-colors">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<span class="font-label-sm text-label-sm">Message</span>
+</button>
+</div>
+<!-- Call Actions (Accept / Decline) -->
+<div class="w-full px-10 pb-16 flex justify-between items-center">
+<!-- Decline Button -->
+<button class="w-[72px] h-[72px] rounded-full bg-error text-on-error flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">call_end</span>
+</button>
+<!-- Accept Button (Primary Green) -->
+<button class="w-[72px] h-[72px] rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-lg active:scale-95 transition-transform pulse-ring">
+<span class="material-symbols-outlined text-[36px]" style="font-variation-settings: 'FILL' 1;">call</span>
+</button>
+</div>
+<!-- Home Indicator Placeholder -->
+<div class="h-8 w-full flex justify-center items-end pb-2">
+<div class="w-1/3 h-1 bg-on-surface/50 rounded-full"></div>
+</div>
+</div>
+</div>
+</body></html>

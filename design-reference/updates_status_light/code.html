@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Updates &amp; Status Viewer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283238",
+                        "on-background": "#131d23",
+                        "on-tertiary-fixed": "#00210b",
+                        "surface-dim": "#d1dbe4",
+                        "secondary": "#006686",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#005773",
+                        "on-secondary-fixed": "#001e2b",
+                        "on-tertiary-fixed-variant": "#005225",
+                        "outline-variant": "#bbcbb9",
+                        "tertiary-fixed-dim": "#4ee07f",
+                        "surface": "#f5faff",
+                        "on-tertiary-container": "#005426",
+                        "secondary-fixed-dim": "#70d2ff",
+                        "tertiary": "#006d33",
+                        "on-surface-variant": "#3c4a3d",
+                        "surface-container": "#e5eff8",
+                        "surface-container-low": "#eaf5fe",
+                        "secondary-container": "#68cffe",
+                        "inverse-on-surface": "#e8f2fb",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#d9e4ec",
+                        "outline": "#6c7b6b",
+                        "primary-fixed": "#66ff8e",
+                        "on-secondary": "#ffffff",
+                        "background": "#f5faff",
+                        "primary-container": "#25d366",
+                        "surface-container-high": "#dfeaf2",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006d2f",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed-variant": "#005322",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#005523",
+                        "secondary-fixed": "#c0e8ff",
+                        "tertiary-container": "#3bd172",
+                        "surface-container-highest": "#d9e4ec",
+                        "tertiary-fixed": "#6efe98",
+                        "on-surface": "#131d23",
+                        "on-secondary-fixed-variant": "#004d66",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#002109",
+                        "surface-tint": "#006d2f",
+                        "surface-bright": "#f5faff",
+                        "inverse-primary": "#3de273"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "avatar-size-lg": "48px",
+                        "stack-md": "12px",
+                        "stack-xs": "4px",
+                        "bubble-padding-v": "8px",
+                        "stack-sm": "8px",
+                        "edge-margin": "16px",
+                        "avatar-size-sm": "32px",
+                        "list-item-height": "72px",
+                        "bubble-padding-h": "12px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Be Vietnam Pro"],
+                        "nav-title": ["Be Vietnam Pro"],
+                        "chat-name": ["Be Vietnam Pro"],
+                        "section-header": ["Be Vietnam Pro"],
+                        "message-body": ["Be Vietnam Pro"],
+                        "timestamp": ["Be Vietnam Pro"],
+                        "button-text": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "nav-title": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "chat-name": ["16px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "section-header": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "message-body": ["15px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "timestamp": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "button-text": ["14px", { "lineHeight": "18px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .status-ring {
+            position: relative;
+            border-radius: 50%;
+        }
+        .status-ring::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            padding: 2px;
+            background: conic-gradient(from 0deg, #25d366 360deg, transparent 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .status-ring.viewed::before {
+            background: #bbcbb9;
+        }
+        .safe-pb { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .safe-pt { padding-top: env(safe-area-inset-top, 47px); }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background h-screen w-full flex items-center justify-center font-message-body text-message-body text-on-background selection:bg-primary-container/30">
+<div class="w-full h-full md:max-w-4xl md:h-[844px] md:rounded-[40px] md:overflow-hidden md:border-[12px] md:border-black bg-surface flex relative shadow-2xl">
+<!-- Left Pane: Updates List -->
+<div class="w-full md:w-1/2 lg:w-2/5 h-full flex flex-col bg-surface border-r border-outline-variant z-10 relative">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 border-b border-outline-variant flex justify-between items-center px-edge-margin h-list-item-height w-full bg-surface shrink-0 safe-pt md:pt-0">
+<div class="flex items-center gap-4">
+<div class="w-avatar-size-sm h-avatar-size-sm rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile picture" class="w-full h-full object-cover" data-alt="A small, circular avatar portrait of a user. The image shows a friendly face in a well-lit setting, styled for a modern mobile application interface in light mode. Soft, natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi568a1gde9sLayTXRMc8-_mDRBvJHwwesMFdtQAGK9M_-FZi7bT74_TepHXCEI0WXxiMLH87ksDE0THsAXQYw-XgqfcI77PXXNx-F8usvidCC8BecJRSd6GACiPD12wBqN8FXIdIaC9SNrGGK5bkSR0XTSGumAeAxmLX0hZ1c7GSznXKv8qlz0Q3mQvpyrx5DxXbacihuAobOEOwxQOaAMTASFqd08vF-LrcCn3X_Fp5KR0Aq0t0g"/>
+</div>
+<h1 class="font-nav-title text-nav-title text-on-background">Updates</h1>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="Camera" class="p-2 hover:bg-surface-variant/50 transition-colors duration-200 rounded-full text-primary">
+<span class="material-symbols-outlined" data-icon="photo_camera" style="font-variation-settings: 'FILL' 0;">photo_camera</span>
+</button>
+<button aria-label="Search" class="p-2 hover:bg-surface-variant/50 transition-colors duration-200 rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button aria-label="More options" class="p-2 hover:bg-surface-variant/50 transition-colors duration-200 rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="more_vert" style="font-variation-settings: 'FILL' 0;">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto hide-scrollbar pb-24 md:pb-0">
+<!-- Status Section Header -->
+<div class="px-edge-margin py-stack-md flex justify-between items-center">
+<h2 class="font-section-header text-section-header text-on-surface-variant font-medium">Status</h2>
+</div>
+<!-- My Status -->
+<div class="px-edge-margin h-list-item-height flex items-center gap-4 hover:bg-surface-variant/30 cursor-pointer transition-colors relative">
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full overflow-hidden relative border border-outline-variant shrink-0">
+<img alt="My Status" class="w-full h-full object-cover" data-alt="Close up portrait of a young person smiling softly, used as a profile picture. The lighting is bright and even, fitting a clean, modern UI aesthetic in light mode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD80UFcdL_orzKk8GCgpeeoRaIpTEU4M4z_5mj8BzC_ApRm4D0QphXRxzKfo8LSNmERpjog--_Y72sz-fZFRZqxaLPwkxiTCkfvvbM_wZXWu3PNAXS9CC1i2FiXm2RZ-8MEe4waH5JbnEJBPW3CtUO6YYALr2b02fMwBUtSQkUooVIWXz_0tyXARomFrPe4JpEMmZK9JlFpSLK-cVVgkxdjw1L135VQCJCsQ6Xm5Fmemm5mLw5IIjDt"/>
+<div class="absolute bottom-0 right-0 bg-primary-container rounded-full w-6 h-6 flex items-center justify-center border-2 border-surface">
+<span class="material-symbols-outlined text-on-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">add</span>
+</div>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-xs">
+<span class="font-chat-name text-chat-name text-on-background truncate">My status</span>
+<span class="font-message-body text-message-body text-on-surface-variant text-[14px] truncate">Tap to add status update</span>
+</div>
+</div>
+<!-- Recent Updates Header -->
+<div class="px-edge-margin py-stack-sm mt-stack-md">
+<h2 class="font-section-header text-section-header text-on-surface-variant font-medium">Recent updates</h2>
+</div>
+<!-- Update Item 1 -->
+<div class="px-edge-margin h-list-item-height flex items-center gap-4 hover:bg-surface-variant/30 cursor-pointer transition-colors">
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full shrink-0 status-ring relative p-[2px]">
+<img alt="Status Update" class="w-full h-full object-cover rounded-full" data-alt="A portrait of a person outdoors in a park setting, used as a profile image. Bright, sunny lighting highlighting the subject's face, suitable for a light mode UI profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhqN1kWf6b2A2WmNj8J8Py2wAAWhm416jtzUNoJZFFA1w5YMRB8s7t8UO9fbGa1ztjTjK2MqYRpM-Y_4oHBJHn7CMg0fCE7LSouc0F-Jw1Su3HPhdAd9F8rJTWItzK80TXG4bNnN96dKaZiRd_nUSp7ngjdORC0XjH9bbkYoXTSky6v7LzaWGfQARaQHYsZkhenVpoGZfDLg4OW8xpz0PdqGZE0e3tSyFEMg1B1ba3kXOVHvZlvDkA"/>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-xs border-b border-outline-variant h-full justify-center">
+<span class="font-chat-name text-chat-name text-on-background truncate">Sarah Jenkins</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant truncate">45 minutes ago</span>
+</div>
+</div>
+<!-- Update Item 2 -->
+<div class="px-edge-margin h-list-item-height flex items-center gap-4 hover:bg-surface-variant/30 cursor-pointer transition-colors bg-surface-variant/20">
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full shrink-0 status-ring relative p-[2px]">
+<img alt="Status Update" class="w-full h-full object-cover rounded-full" data-alt="A profile picture showing a person in a bustling cafe environment. The image is warm and inviting, fitting for a social communication app interface in light mode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSjMtJHdfR_Nb-mSlle6i6xMeruaQlKJdmz8W5tcQqjO-ht6_d7-rhMXetl01tGtv0VxortqTbwQngmLVwF8CPw7dWNhUcfLldkaCgbEN88iukMm8pC0fXH0QkRu12nsEJn1_fg3Mu5fRcYEGqYiJ_ZZ1Ohqa8yV9JmFOO3WvvIUuIDlMIKI6yKHIdOsOAXK4jRtl6Xe1MMfjlW6SNN1Blc0E9Hsj4VVrSRAuIqfsNaUhocP-dywwq"/>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-xs border-b border-outline-variant h-full justify-center">
+<span class="font-chat-name text-chat-name text-on-background truncate">Mike Ross</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant truncate">2 hours ago</span>
+</div>
+</div>
+<!-- Viewed Updates Header -->
+<div class="px-edge-margin py-stack-sm mt-stack-md flex justify-between items-center group cursor-pointer">
+<h2 class="font-section-header text-section-header text-on-surface-variant font-medium">Viewed updates</h2>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px] transition-transform group-hover:rotate-180">expand_more</span>
+</div>
+<!-- Update Item 3 (Viewed) -->
+<div class="px-edge-margin h-list-item-height flex items-center gap-4 hover:bg-surface-variant/30 cursor-pointer transition-colors opacity-70">
+<div class="w-avatar-size-lg h-avatar-size-lg rounded-full shrink-0 status-ring viewed relative p-[2px]">
+<img alt="Status Update" class="w-full h-full object-cover rounded-full" data-alt="A profile photo of a person wearing glasses, looking thoughtful. Clean, minimalist background. The style is modern and fits a light mode corporate utility application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjcEA0ugXzwljLxzqKtG4bOxJNh_u3YV6u7gyYk_uELT-BesxaX5XjsoJYuykkefDfYoa3bTHecpm2IueBCYxuX7DxGPBcwXHcFqmOt11k37JTdisgGxYR_qak4Dfvhob8_VTD0LKzud0cTTMvJFtC8nP0FlwWkxyt0Plo6QFNPx3IbZ61lTZDK2eH-efxDrx_GSsC3bFomInU2vWEZ6mZzgAdrnCchkHgoLalLjzfz989bG2v6agw"/>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-xs h-full justify-center">
+<span class="font-chat-name text-chat-name text-on-background truncate">Alex Chen</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant truncate">Yesterday, 10:30 PM</span>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed md:hidden bottom-0 w-full z-50 flex justify-around items-center pt-2 safe-pb px-4 bg-surface-container border-t border-outline-variant">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform w-16 h-12 rounded-xl">
+<span class="material-symbols-outlined mb-1" data-icon="chat" style="font-variation-settings: 'FILL' 0;">chat</span>
+<span class="font-label-sm text-label-sm">Chats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary hover:bg-surface-variant/30 active:scale-95 transition-transform w-16 h-12 rounded-xl bg-surface-variant/50">
+<span class="material-symbols-outlined mb-1" data-icon="update" style="font-variation-settings: 'FILL' 1;">update</span>
+<span class="font-label-sm text-label-sm">Updates</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform w-16 h-12 rounded-xl">
+<span class="material-symbols-outlined mb-1" data-icon="groups" style="font-variation-settings: 'FILL' 0;">groups</span>
+<span class="font-label-sm text-label-sm">Communities</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/30 active:scale-95 transition-transform w-16 h-12 rounded-xl">
+<span class="material-symbols-outlined mb-1" data-icon="call" style="font-variation-settings: 'FILL' 0;">call</span>
+<span class="font-label-sm text-label-sm">Calls</span>
+</button>
+</nav>
+<!-- FABs for Updates -->
+<div class="absolute bottom-24 right-4 md:bottom-8 md:right-8 flex flex-col gap-4 items-center">
+<button aria-label="Edit Status" class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant shadow-md flex items-center justify-center hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit" style="font-variation-settings: 'FILL' 1;">edit</span>
+</button>
+<button aria-label="Camera Status" class="w-14 h-14 rounded-[16px] bg-primary-container text-on-primary shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center hover:bg-primary-container/90 transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="photo_camera" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</button>
+</div>
+</div>
+<!-- Right Pane: Status Viewer -->
+<div class="hidden md:flex flex-col flex-1 bg-black relative h-full group">
+<!-- Background Media -->
+<div class="absolute inset-0 w-full h-full">
+<img alt="Status Media" class="w-full h-full object-cover" data-alt="A breathtaking, vibrant landscape photo taken during golden hour. A person is silhouetted against a stunning sunset over a calm ocean. The colors are rich oranges, pinks, and deep blues, serving as an engaging status update background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGjfQHEKfAbO0Ma2r_sw6KWvlkOilInugFTO-ItkcIdI4kUtV6TtH91vNT5hzFo3JlelIXapxxV0-Ziw_odesWUshsAyC10yieARangy_A4t5q4VLoIUgfsFb4Nz9Ec1rAa6xZVPpRd_o1bzmfIrCI5NWCl5sRgg7YGvFmrS7OiwSC-ZW5beU8MFqgx2qTOZEhbRKGFYvYIP6gLQo2VaasQrbhNhJg3PNDdZgJUJoQ3gJgB1qw2jqS"/>
+<!-- Overlay for better text readability -->
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none"></div>
+</div>
+<!-- Top Header & Progress -->
+<div class="absolute top-0 w-full px-4 safe-pt z-20">
+<!-- Progress Bars -->
+<div class="flex gap-1 pt-4 pb-2 w-full">
+<div class="h-1 flex-1 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm">
+<div class="h-full bg-white w-full rounded-full"></div>
+</div>
+<div class="h-1 flex-1 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm relative">
+<div class="absolute top-0 left-0 h-full bg-white w-1/3 rounded-full transition-all duration-300 ease-linear"></div>
+</div>
+<div class="h-1 flex-1 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm"></div>
+<div class="h-1 flex-1 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm"></div>
+</div>
+<!-- Author Info -->
+<div class="flex items-center gap-3 py-2">
+<button aria-label="Back" class="text-white p-1 -ml-1 rounded-full hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/20 shrink-0">
+<img alt="Mike Ross" class="w-full h-full object-cover" data-alt="Profile picture of Mike Ross in a cafe, matching the list view image." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApt1g7ixGTrtvmjpvrP63KSvo0__c8io8oRwOJLLSgDAj0i3Ig1J5jY2J6yd0_TYrHFvG0_M1nRjFdfs-STdYruZGbBzXVbwECkPLdUQzNbadlWAY59Yl1PX4YUs5hlBwopGaUA9T5FSpIb6SQIudWcMKuEm_VpLsoW3jNehjGkNDtBj7tjelGBsc8lnogF21yR7KUHCTWEPccCiM4-Zr5h8-jB4zP7YArxztbEFQpFpKh7Uk8DLPz"/>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-chat-name text-chat-name text-white font-semibold truncate drop-shadow-md">Mike Ross</span>
+<span class="font-timestamp text-timestamp text-white/80 truncate drop-shadow-md">2 hours ago</span>
+</div>
+<button aria-label="More" class="text-white p-2 rounded-full hover:bg-white/20 transition-colors ml-auto">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Main Content Area (Tap targets) -->
+<div class="flex-1 relative z-10 flex cursor-pointer">
+<div aria-label="Previous Status" class="w-1/3 h-full"></div>
+<div aria-label="Next Status" class="w-2/3 h-full"></div>
+</div>
+<!-- Bottom Reply Input -->
+<div class="absolute bottom-0 w-full px-4 pb-6 safe-pb z-20 flex flex-col gap-4 opacity-100 transition-opacity duration-300">
+<div class="text-center w-full mb-4">
+<span class="inline-block px-4 py-2 bg-black/40 backdrop-blur-md text-white rounded-full font-message-body text-sm font-medium">Beautiful sunset at the bay! 🌅</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-black/30 backdrop-blur-xl border border-white/20 rounded-full flex items-center px-4 h-12 shadow-lg focus-within:bg-black/50 transition-colors">
+<button aria-label="Emoji" class="text-white/80 p-1 hover:text-white">
+<span class="material-symbols-outlined text-[24px]" data-icon="mood">mood</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-white/70 font-message-body text-message-body px-3" placeholder="Reply..." type="text"/>
+</div>
+<button aria-label="Reply" class="w-12 h-12 rounded-full bg-primary-container text-white shadow-lg flex items-center justify-center hover:bg-primary-container/90 transition-transform active:scale-95 shrink-0">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Chat - Reaction &amp; Action State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#283238",
+                      "on-background": "#131d23",
+                      "on-tertiary-fixed": "#00210b",
+                      "surface-dim": "#d1dbe4",
+                      "secondary": "#006686",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#005773",
+                      "on-secondary-fixed": "#001e2b",
+                      "on-tertiary-fixed-variant": "#005225",
+                      "outline-variant": "#bbcbb9",
+                      "tertiary-fixed-dim": "#4ee07f",
+                      "surface": "#f5faff",
+                      "on-tertiary-container": "#005426",
+                      "secondary-fixed-dim": "#70d2ff",
+                      "tertiary": "#006d33",
+                      "on-surface-variant": "#3c4a3d",
+                      "surface-container": "#e5eff8",
+                      "surface-container-low": "#eaf5fe",
+                      "secondary-container": "#68cffe",
+                      "inverse-on-surface": "#e8f2fb",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-variant": "#d9e4ec",
+                      "outline": "#6c7b6b",
+                      "primary-fixed": "#66ff8e",
+                      "on-secondary": "#ffffff",
+                      "background": "#f5faff",
+                      "primary-container": "#25d366",
+                      "surface-container-high": "#dfeaf2",
+                      "on-tertiary": "#ffffff",
+                      "primary": "#006d2f",
+                      "primary-fixed-dim": "#3de273",
+                      "on-primary-fixed-variant": "#005322",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#005523",
+                      "secondary-fixed": "#c0e8ff",
+                      "tertiary-container": "#3bd172",
+                      "surface-container-highest": "#d9e4ec",
+                      "tertiary-fixed": "#6efe98",
+                      "on-surface": "#131d23",
+                      "on-secondary-fixed-variant": "#004d66",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed": "#002109",
+                      "surface-tint": "#006d2f",
+                      "surface-bright": "#f5faff",
+                      "inverse-primary": "#3de273"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "avatar-size-lg": "48px",
+                      "stack-md": "12px",
+                      "stack-xs": "4px",
+                      "bubble-padding-v": "8px",
+                      "stack-sm": "8px",
+                      "edge-margin": "16px",
+                      "avatar-size-sm": "32px",
+                      "list-item-height": "72px",
+                      "bubble-padding-h": "12px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "Be Vietnam Pro"
+                      ],
+                      "nav-title": [
+                              "Be Vietnam Pro"
+                      ],
+                      "chat-name": [
+                              "Be Vietnam Pro"
+                      ],
+                      "section-header": [
+                              "Be Vietnam Pro"
+                      ],
+                      "message-body": [
+                              "Be Vietnam Pro"
+                      ],
+                      "timestamp": [
+                              "Be Vietnam Pro"
+                      ],
+                      "button-text": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "nav-title": [
+                              "17px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "chat-name": [
+                              "16px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "section-header": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "message-body": [
+                              "15px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "timestamp": [
+                              "11px",
+                              {
+                                      "lineHeight": "14px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "button-text": [
+                              "14px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Simulating the blurred backdrop for the action menu */
+        .glass-menu {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .bubble-incoming {
+            border-radius: 18px 18px 18px 4px;
+        }
+        .bubble-outgoing {
+            border-radius: 18px 18px 4px 18px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-screen w-full flex items-center justify-center overflow-hidden font-message-body selection:bg-primary-container/30">
+<!-- Mobile Device Frame (iPhone-like) -->
+<div class="relative w-full max-w-[430px] h-full sm:h-[932px] sm:rounded-[3rem] sm:border-[8px] sm:border-surface-variant overflow-hidden shadow-2xl bg-surface flex flex-col isolate">
+<!-- TopAppBar (Blurred out slightly by the overlay) -->
+<header class="flex justify-between items-center px-edge-margin h-list-item-height w-full bg-surface dark:bg-on-background border-b border-outline-variant dark:border-outline shrink-0 relative z-0">
+<div class="flex items-center gap-3">
+<button class="text-primary dark:text-primary-fixed -ml-2 p-2">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</button>
+<div class="relative">
+<img class="w-avatar-size-sm h-avatar-size-sm rounded-full object-cover border border-surface-variant" data-alt="A small circular avatar of a person, professional headshot in light mode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOVbSroGSTst6Sz3bTxEA1gYv_kJlgBUYxbXFe-_-tWFzOHNsWfXu2X8LHAJGk-S5W9L2DKWf43aGL_wAzCLBkSKeeVRLUVwNLYsby9Oj_PsVodblOsg5VuOZrTDyUOjRHTU3fToG-mZYqvs2NOACDDJ_iCh3ywWHQeF63iFzyxv_lBFpsmdb2frmkVIl_1f6nhzpPjj8tAsr5PSEh-k2fkz5FligyRXOdv2gPQNeFKUDpahnPNE0o"/>
+</div>
+<div class="flex flex-col">
+<span class="font-nav-title text-nav-title text-on-background dark:text-surface">Design Team</span>
+<span class="font-timestamp text-timestamp text-on-surface-variant">online</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="text-primary dark:text-primary-fixed p-2 hover:bg-surface-variant/50 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="text-primary dark:text-primary-fixed p-2 hover:bg-surface-variant/50 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</header>
+<!-- Chat Canvas (Underneath Overlay) -->
+<main class="flex-1 overflow-y-auto px-edge-margin py-stack-md flex flex-col gap-stack-md bg-[#efeae2] relative z-0">
+<!-- Simulated background pattern for chat -->
+<div class="absolute inset-0 opacity-40 pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%236c7b6b\' fill-opacity=\'0.2\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+<!-- Date header -->
+<div class="flex justify-center my-2">
+<span class="bg-surface-container text-on-surface-variant font-timestamp text-timestamp px-3 py-1 rounded-lg shadow-sm">Today</span>
+</div>
+<!-- Outgoing Message -->
+<div class="flex flex-col items-end w-full">
+<div class="bg-[#d9fdd3] text-on-background px-bubble-padding-h py-bubble-padding-v bubble-outgoing max-w-[75%] shadow-sm relative">
+<p class="font-message-body text-message-body mb-3">Hey! Are we still on for the review at 2?</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant opacity-70">10:42 AM</span>
+<span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Incoming Message (This is the one we are interacting with, but shown in background) -->
+<div class="flex flex-col items-start w-full mt-2 opacity-30">
+<div class="bg-surface text-on-background px-bubble-padding-h py-bubble-padding-v bubble-incoming max-w-[75%] shadow-sm relative">
+<p class="font-message-body text-message-body mb-3">Yes, I've updated the Figma file. Let me know what you think!</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant opacity-70">10:45 AM</span>
+</div>
+</div>
+</div>
+<!-- Outgoing Message -->
+<div class="flex flex-col items-end w-full mt-2 opacity-30">
+<div class="bg-[#d9fdd3] text-on-background px-bubble-padding-h py-bubble-padding-v bubble-outgoing max-w-[75%] shadow-sm relative">
+<p class="font-message-body text-message-body mb-3">Awesome, checking it now.</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant opacity-70">10:47 AM</span>
+<span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Chat Input Area (Blurred) -->
+<footer class="bg-surface border-t border-outline-variant px-edge-margin py-2 pb-safe shrink-0 flex items-end gap-2 relative z-0 opacity-50">
+<button class="text-on-surface-variant p-2 rounded-full mb-1">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="flex-1 bg-surface-container rounded-full min-h-[40px] max-h-[120px] flex items-center px-4 mb-1">
+<input class="w-full bg-transparent border-none focus:ring-0 font-message-body text-message-body placeholder-on-surface-variant p-0" disabled="" placeholder="Message" type="text"/>
+<button class="text-on-surface-variant ml-2">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+</div>
+<button class="bg-primary-container text-on-primary-container p-2 rounded-full mb-1 shadow-sm">
+<span class="material-symbols-outlined">mic</span>
+</button>
+</footer>
+<!-- INTERACTION OVERLAY (Dimmed Background) -->
+<div class="absolute inset-0 bg-on-background/40 z-40 transition-opacity duration-200 ease-in-out"></div>
+<!-- REACTION & ACTION STATE UI -->
+<!-- We position this absolutely to simulate it popping out of its original position -->
+<div class="absolute top-[280px] left-edge-margin right-12 z-50 flex flex-col items-start origin-top-left animate-pop-in">
+<!-- Reaction Bar -->
+<div class="glass-menu rounded-[24px] shadow-[0px_8px_24px_rgba(0,0,0,0.12)] mb-2 px-3 py-2 flex items-center gap-3 w-max translate-x-2">
+<button class="text-[24px] hover:scale-125 transition-transform duration-200 origin-bottom">👍</button>
+<button class="text-[24px] hover:scale-125 transition-transform duration-200 origin-bottom">❤️</button>
+<button class="text-[24px] hover:scale-125 transition-transform duration-200 origin-bottom">😂</button>
+<button class="text-[24px] hover:scale-125 transition-transform duration-200 origin-bottom">😮</button>
+<button class="text-[24px] hover:scale-125 transition-transform duration-200 origin-bottom">😢</button>
+<button class="text-[24px] hover:scale-125 transition-transform duration-200 origin-bottom">🙏</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors ml-1">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+<!-- The Lifted Message Bubble -->
+<div class="bg-surface text-on-background px-bubble-padding-h py-bubble-padding-v bubble-incoming w-[85%] shadow-[0px_8px_32px_rgba(0,0,0,0.15)] relative scale-105 transform origin-top-left z-50">
+<p class="font-message-body text-message-body mb-3">Yes, I've updated the Figma file. Let me know what you think!</p>
+<div class="absolute bottom-1 right-2 flex items-center gap-1">
+<span class="font-timestamp text-timestamp text-on-surface-variant opacity-70">10:45 AM</span>
+</div>
+</div>
+<!-- Action Menu -->
+<div class="glass-menu rounded-[16px] shadow-[0px_8px_24px_rgba(0,0,0,0.12)] mt-2 w-[220px] flex flex-col overflow-hidden">
+<button class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors border-b border-outline-variant/30 active:bg-surface-variant">
+<span class="font-button-text text-button-text text-on-surface">Reply</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">reply</span>
+</button>
+<button class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors border-b border-outline-variant/30 active:bg-surface-variant">
+<span class="font-button-text text-button-text text-on-surface">Forward</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">forward</span>
+</button>
+<button class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors border-b border-outline-variant/30 active:bg-surface-variant">
+<span class="font-button-text text-button-text text-on-surface">Copy</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">content_copy</span>
+</button>
+<button class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors border-b border-outline-variant/30 active:bg-surface-variant">
+<span class="font-button-text text-button-text text-on-surface">Star</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">star</span>
+</button>
+<button class="flex items-center justify-between px-4 py-3 hover:bg-surface-variant/50 transition-colors border-b border-outline-variant/30 active:bg-surface-variant">
+<span class="font-button-text text-button-text text-on-surface">Info</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">info</span>
+</button>
+<button class="flex items-center justify-between px-4 py-3 hover:bg-error-container/50 transition-colors active:bg-error-container">
+<span class="font-button-text text-button-text text-error">Delete</span>
+<span class="material-symbols-outlined text-error text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<style>
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .animate-pop-in {
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</body></html>
