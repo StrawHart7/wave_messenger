@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-6 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet; groups, membership, admin permissions and the info screens; status with its composer, full-screen viewer and 24-hour lifetime. Phase 7 (calls) is next — see `PLAN.md`.
+Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-7 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet; groups, membership, admin permissions and the info screens; status with its composer, full-screen viewer and 24-hour lifetime; 1:1 voice and video calls over WebRTC with history. Phase 8 (settings, privacy and polish) is next — see `PLAN.md`.
 
 Read before doing anything:
 
@@ -46,6 +46,7 @@ app/                 _layout.tsx (fonts, providers, AuthGate, useAppSync)
   chat/[id]/         index.tsx (conversation), info.tsx (group info)
   contact/[id].tsx   contact info, collapsing hero
   status/            compose.tsx, [userId].tsx (full-screen viewer)
+  call/[id].tsx      outgoing, incoming and active call — one surface, three stages
   new-chat.tsx       people picker + New group entry
   new-group.tsx      two-step creation (participants -> subject & icon)
   add-members.tsx    add to an existing group
@@ -58,22 +59,27 @@ components/chat/     Bubble, ChatRow, Composer, MediaBubble, VoiceNoteBubble,
                      TypingBubble, ContactBubble
 components/group/    ContactPicker, SelectionChips, MemberRow, InfoSection, TextPrompt
 components/status/   StatusAvatar (ring), SegmentedProgress, ViewerSheet
+components/call/     StreamView (RTCView behind the seam)
 db/                  schema.ts, client.ts (connection + revision), chats.ts, messages.ts,
-                     members.ts, profiles.ts, status.ts, attachments.ts (attachments + reactions)
+                     members.ts, profiles.ts, status.ts, calls.ts,
+                     attachments.ts (attachments + reactions)
 hooks/               useLiveQuery, useChats, useConversation, useMembers, useSignedUrls,
-                     useStatus, useVoiceRecorder, useAppSync
+                     useStatus, useCalls, useVoiceRecorder, useAppSync
 theme/               tokens.ts, fontFamilies.ts, fonts.ts, ThemeProvider.tsx
 services/            storage, supabase, auth, phone, contacts (pure), contactSync,
                      media, messageState, grouping, chatList, attachments, waveform,
                      reactions, groups (pure), groupSync, chatSync, contactCard,
-                     status (pure), statusSync
+                     status (pure), statusSync, calls (pure), callSession,
+                     callSignal, callSync, callFlow, callNotifications,
+                     webrtc (native seam)
 services/realtime/   messages.ts (postgres_changes), presence.ts (typing + presence),
                      membership.ts (chat_members + chats), status.ts
 services/sync/       outbox.ts (text), uploads.ts (media), bootstrap.ts (server -> SQLite)
-stores/              session.ts (Zustand)
+stores/              session.ts, call.ts (both Zustand)
 supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies),
                      0003_groups.sql (admin guards + system-message triggers),
-                     0004_status.sql (view-insert guard + expiry sweep)
+                     0004_status.sql (view-insert guard + expiry sweep),
+                     0005_calls.sql (outcome-write guard + stale-call sweep)
 ```
 
 Arriving in later phases: `app/call/[id]`, `app/settings/`.
@@ -129,6 +135,18 @@ Conventions worth knowing before writing code here:
 - Full-screen playback progress rides a Reanimated shared value, never React state: re-rendering
   a video surface every frame to move a progress bar is how a smooth screen becomes a stuttering
   one.
+- **Native modules live behind a seam.** `services/webrtc.ts` and `services/callNotifications.ts`
+  `require()` lazily and return null when the module is absent, so the app still boots in Expo Go
+  and the call surfaces say why they cannot work. Follow that shape for any new native dependency
+  — the same pattern as `services/storage.ts`.
+- **Call signalling never touches Postgres.** SDP and ICE ride a Realtime broadcast channel; the
+  `calls` table holds history only. A candidate is worthless four seconds later and does not earn
+  a row, a WAL entry and a replication hop.
+- **A live call is not durable state.** It lives in `stores/call.ts`, not SQLite: the peer
+  connection dies with the process, so a persisted call could only ever be a ghost to clean up on
+  the next launch. The history row is in SQLite.
+- Simultaneous dials are resolved by comparing user ids (`isPolite`), because the rule has to be
+  decided without talking. Both sides compute the same answer from what they already know.
 
 ## Stack (fixed — do not substitute)
 

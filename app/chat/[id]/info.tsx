@@ -201,10 +201,20 @@ export default function GroupInfoScreen() {
             {memberCountLabel(members.length)}
           </Text>
 
+          {/* Group calls need a mesh of peer connections, which waits until 1:1 is
+              proven on real devices — so these say so rather than failing quietly. */}
           <QuickActions
             actions={[
-              { icon: 'call', label: 'Audio' },
-              { icon: 'videocam', label: 'Video' },
+              {
+                icon: 'call',
+                label: 'Audio',
+                onPress: () => Alert.alert('Not yet', 'Group calls arrive after 1:1 calling is verified.'),
+              },
+              {
+                icon: 'videocam',
+                label: 'Video',
+                onPress: () => Alert.alert('Not yet', 'Group calls arrive after 1:1 calling is verified.'),
+              },
               { icon: 'search', label: 'Search' },
             ]}
           />

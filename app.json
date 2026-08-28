@@ -15,7 +15,17 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.strawhart.wave"
+      "bundleIdentifier": "com.strawhart.wave",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Wave uses the camera for video calls, photos and status updates.",
+        "NSMicrophoneUsageDescription": "Wave uses the microphone for voice notes and calls.",
+        "NSContactsUsageDescription": "Wave matches your address book to find which of your contacts are on Wave.",
+        "NSPhotoLibraryUsageDescription": "Wave uses your photo library to send photos and post status updates.",
+        "UIBackgroundModes": [
+          "audio",
+          "voip"
+        ]
+      }
     },
     "android": {
       "package": "com.strawhart.wave",
@@ -24,7 +34,15 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.READ_CONTACTS",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -33,7 +51,9 @@
       "expo-sqlite",
       "expo-image",
       "expo-audio",
-      "expo-video"
+      "expo-video",
+      "expo-notifications",
+      "@config-plugins/react-native-webrtc"
     ],
     "experiments": {
       "typedRoutes": true

@@ -30,6 +30,8 @@ import { useSignedUrls } from '../../../hooks/useSignedUrls';
 import { useVoiceRecorder } from '../../../hooks/useVoiceRecorder';
 import { kindForMime } from '../../../services/attachments';
 import { encodeContactCard } from '../../../services/contactCard';
+import { placeCall } from '../../../services/callFlow';
+import type { CallKind } from '../../../services/calls';
 import { filterCandidates, groupSubtitle, headerMemberLine, senderTintIndex } from '../../../services/groups';
 import { refreshMembers } from '../../../services/groupSync';
 import type { LocalMessage } from '../../../services/messageState';
@@ -37,6 +39,7 @@ import { publicUrl } from '../../../services/media';
 import { sendReadReceipts } from '../../../services/realtime/messages';
 import { presenceLabel, subscribeToChatPresence } from '../../../services/realtime/presence';
 import { toggle } from '../../../services/reactions';
+import { NO_WEBRTC_MESSAGE, isWebrtcAvailable } from '../../../services/webrtc';
 import { pullMessages } from '../../../services/sync/bootstrap';
 import { draftMessage, enqueue } from '../../../services/sync/outbox';
 import { compressImage, sendMedia } from '../../../services/sync/uploads';
@@ -51,6 +54,7 @@ export default function ConversationScreen() {
   const { colors, spacing, radii, iconSizes } = useTheme();
   const { width } = useWindowDimensions();
   const viewerId = useSession((s) => s.userId) ?? '';
+  const profile = useSession((s) => s.profile);
 
   const chat = useLiveQuery(() => getChat(chatId), [chatId]);
   const isGroup = chat?.kind === 'group';
@@ -241,6 +245,47 @@ export default function ConversationScreen() {
     .map((userId) => typingProfiles.get(userId)?.displayName ?? '')
     .filter((name) => name.length > 0);
 
+  /**
+   * Calling from the conversation. Group calls are refused rather than half-built:
+   * a mesh of peer connections is a different piece of engineering from a 1:1 call,
+   * and one that has to wait until 1:1 is proven on real devices.
+   */
+  const call = useCallback(
+    async (kind: CallKind) => {
+      if (isGroup) {
+        Alert.alert('Not yet', 'Group calls arrive after 1:1 calling is verified on real devices.');
+        return;
+      }
+      if (!isWebrtcAvailable()) {
+        Alert.alert('Not available here', NO_WEBRTC_MESSAGE);
+        return;
+      }
+
+      const peer = memberIds(chatId).find((userId) => userId !== viewerId);
+      if (!peer) return;
+
+      try {
+        const callId = await placeCall({
+          selfId: viewerId,
+          selfName: profile?.displayName ?? '',
+          selfAvatarPath: profile?.avatarPath ?? null,
+          chatId,
+          peerId: peer,
+          peerName: chat?.title ?? '',
+          peerAvatarPath: chat?.avatarPath ?? null,
+          kind,
+        });
+        router.push(`/call/${callId}`);
+      } catch {
+        Alert.alert('Could not start the call', 'Check your connection and try again.');
+      }
+    },
+    // `chat` whole, not its two fields: the closure captures the object, and the
+    // compiler refuses to preserve a memo whose stated deps are narrower than the
+    // ones it can see.
+    [isGroup, chatId, viewerId, profile, chat],
+  );
+
   const subtitle = isGroup
     ? groupSubtitle({ typingNames, memberLine: headerMemberLine(members, viewerId) })
     : presenceLabel({
@@ -360,10 +405,20 @@ export default function ConversationScreen() {
           </View>
         </Pressable>
 
-        <Pressable accessibilityRole="button" accessibilityLabel="Video call" hitSlop={8}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Video call"
+          onPress={() => void call('video')}
+          hitSlop={8}
+        >
           <MaterialIcons name="videocam" size={iconSizes.xl} color={colors.tide.primary} />
         </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel="Voice call" hitSlop={8}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Voice call"
+          onPress={() => void call('voice')}
+          hitSlop={8}
+        >
           <MaterialIcons name="call" size={iconSizes.lg} color={colors.tide.primary} />
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="More" hitSlop={8}>

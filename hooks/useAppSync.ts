@@ -7,6 +7,7 @@ import { pullChats } from '../services/sync/bootstrap';
 import { resumeOutbox } from '../services/sync/outbox';
 import { pullStatus } from '../services/statusSync';
 import { useSession } from '../stores/session';
+import { useIncomingCalls } from './useCalls';
 
 /**
  * Everything that has to be running for the app to be live, started once the
@@ -19,6 +20,10 @@ import { useSession } from '../stores/session';
 export function useAppSync(): void {
   const status = useSession((s) => s.status);
   const viewerId = useSession((s) => s.userId);
+
+  // Incoming calls have their own hook: a call arriving is the one event that
+  // takes over the screen, so it routes rather than writing to SQLite.
+  useIncomingCalls();
 
   useEffect(() => {
     if (status !== 'ready' || !viewerId) return;

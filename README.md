@@ -2,11 +2,12 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phases 1-6** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
+> Status: **Phases 1-7** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
 > and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime; media,
 > voice notes, reactions and replies; groups with server-enforced admin permissions and the info
-> screens; status with its composer, full-screen viewer and 24-hour lifetime. Phases 7-8 in
-> [PLAN.md](PLAN.md).
+> screens; status with its composer, full-screen viewer and 24-hour lifetime; 1:1 voice and video
+> calls over WebRTC with history. Calls need a development build — the WebRTC module is native and
+> is absent from Expo Go. Phase 8 in [PLAN.md](PLAN.md).
 
 ## Stack
 

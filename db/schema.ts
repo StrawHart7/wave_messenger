@@ -7,7 +7,7 @@
  * locally before the server has ever seen it.
  */
 
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const MIGRATIONS: string[] = [
   // v1 — chats, messages, receipts and the local profile cache.
@@ -157,5 +157,24 @@ export const MIGRATIONS: string[] = [
     viewed_at integer not null,
     primary key (status_id, viewer_id)
   );
+  `,
+
+  // v5 — call history. The peer is denormalised onto the row: a call to someone
+  // who later leaves the group, or whose profile is gone, still has to say who it
+  // was with a year later.
+  `
+  create table if not exists calls (
+    id text primary key,
+    chat_id text not null,
+    peer_id text not null,
+    kind text not null,
+    direction text not null,
+    status text not null,
+    started_at integer not null,
+    answered_at integer,
+    ended_at integer
+  );
+
+  create index if not exists calls_started_idx on calls (started_at desc);
   `,
 ];

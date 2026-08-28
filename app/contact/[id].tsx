@@ -12,6 +12,11 @@ import Animated, {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InfoRow, InfoSection, QuickActions } from '../../components/group/InfoSection';
+import { placeCall } from '../../services/callFlow';
+import type { CallKind } from '../../services/calls';
+import { findOrCreateDirectChat } from '../../services/chatSync';
+import { NO_WEBRTC_MESSAGE, isWebrtcAvailable } from '../../services/webrtc';
+import { useSession } from '../../stores/session';
 import { Avatar, Text } from '../../components/ui';
 import { getProfile } from '../../db/profiles';
 import { useLiveQuery } from '../../hooks/useLiveQuery';
@@ -34,6 +39,8 @@ export default function ContactInfoScreen() {
   const userId = id ?? '';
   const { colors, spacing, iconSizes } = useTheme();
   const profile = useLiveQuery(() => getProfile(userId), [userId]);
+  const viewerId = useSession((s) => s.userId) ?? '';
+  const me = useSession((s) => s.profile);
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
@@ -58,6 +65,43 @@ export default function ContactInfoScreen() {
   const openChat = useCallback(() => {
     router.back();
   }, []);
+
+  /**
+   * Calling from a contact card. The chat is found or created first: a call is
+   * recorded against a chat, and this screen can be reached from a group's member
+   * list where no one-to-one chat exists yet.
+   */
+  const startCall = useCallback(
+    async (kind: CallKind) => {
+      if (!isWebrtcAvailable()) {
+        Alert.alert('Not available here', NO_WEBRTC_MESSAGE);
+        return;
+      }
+
+      try {
+        const chatId = await findOrCreateDirectChat(viewerId, {
+          userId,
+          displayName: profile?.displayName ?? '',
+          avatarPath: profile?.avatarPath ?? null,
+        });
+
+        const callId = await placeCall({
+          selfId: viewerId,
+          selfName: me?.displayName ?? '',
+          selfAvatarPath: me?.avatarPath ?? null,
+          chatId,
+          peerId: userId,
+          peerName: profile?.displayName ?? '',
+          peerAvatarPath: profile?.avatarPath ?? null,
+          kind,
+        });
+        router.push(`/call/${callId}`);
+      } catch {
+        Alert.alert('Could not start the call', 'Check your connection and try again.');
+      }
+    },
+    [userId, viewerId, profile, me],
+  );
 
   const name = profile?.displayName ?? '';
   const status = presenceLabel({
@@ -123,8 +167,8 @@ export default function ContactInfoScreen() {
           <QuickActions
             actions={[
               { icon: 'chat', label: 'Message', onPress: openChat },
-              { icon: 'call', label: 'Audio' },
-              { icon: 'videocam', label: 'Video' },
+              { icon: 'call', label: 'Audio', onPress: () => void startCall('voice') },
+              { icon: 'videocam', label: 'Video', onPress: () => void startCall('video') },
             ]}
           />
         </Animated.View>

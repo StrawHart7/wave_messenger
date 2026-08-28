@@ -221,6 +221,49 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** voice and video calls connect between two physical devices on different networks, with audio and video both directions and a correctly logged history row.
 
+> **Code complete, verification outstanding — and further from verification than any phase so
+> far.** Passes `npm run verify` (212 tests, 34 new: the state machine, glare resolution, ICE
+> configuration and the history rows). Nothing here has connected a call. This phase needs a
+> development build, two physical devices on different networks, and a TURN server, none of which
+> exist yet.
+>
+> One more hole in 0001, closed in `0005_calls.sql`: "members update calls in their chats" let
+> any member of a group rewrite any call row in it — mark someone else's call ended, or backdate
+> its answer time. Updates are now restricted to the initiator, an actual participant, or a call
+> still ringing (a callee who declines has no participant row to prove itself with). A trigger
+> also stops a finished call changing state, so a late hang-up cannot reopen a call already
+> written off as missed.
+>
+> Decisions:
+> - **Signalling rides Realtime broadcast, never Postgres.** An SDP offer and a dozen ICE
+>   candidates are worthless four seconds later; writing each to a table means a row, a WAL entry
+>   and a replication hop for data whose whole lifetime is the handshake. The `calls` table is
+>   history.
+> - **Native modules sit behind a seam** (`services/webrtc.ts`, `services/callNotifications.ts`).
+>   `react-native-webrtc` does not exist in Expo Go, and importing it at module scope crashes the
+>   whole app on launch rather than failing at the one screen that needs it. Every call surface
+>   asks first and says why it cannot work.
+> - **Perfect negotiation, not a hand-rolled handshake.** If both sides dial at once there are two
+>   offers in flight and the connection deadlocks. The polite peer is decided by comparing user
+>   ids — a rule both sides compute identically without talking.
+> - **One screen for all three stages.** The reference draws outgoing and incoming separately, but
+>   they are the same surface at different moments; two routes would mean a navigation transition
+>   at the instant somebody answers.
+> - **The callee's media opens on answer, not on ring.** A phone that negotiates before it is
+>   picked up has already opened your microphone.
+> - A live call lives in Zustand, not SQLite: the peer connection dies with the process, so a
+>   persisted call could only ever be a ghost. The history row is in SQLite.
+>
+> **Owed, and deliberately not faked:**
+> - **Incoming calls to a killed app do not arrive.** A killed app has no socket, so no amount of
+>   local-notification code helps. That needs a push notification plus CallKit (iOS) and
+>   ConnectionService (Android) — a development build, an APNs/FCM key and a server-side trigger.
+>   What ships here works in the foreground, and in the background while the socket is alive.
+> - **Group calls are refused, not half-built.** A mesh of peer connections is different
+>   engineering, and it waits until 1:1 is proven on hardware. The group surfaces say so.
+> - **No TURN server is configured.** `.env.example` carries the variables; without them roughly
+>   one call in five will fail to connect, and always the ones on mobile data.
+
 ## Phase 8 — Settings, privacy & polish
 
 - Settings tree and Privacy detail screen → against `settings_privacy_polished`.
