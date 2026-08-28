@@ -2,10 +2,10 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phases 1-5** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
+> Status: **Phases 1-6** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
 > and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime; media,
-> voice notes, reactions and replies; groups with server-enforced admin permissions, membership
-> narrated as system messages, and the group and contact info screens. Phases 6-8 in
+> voice notes, reactions and replies; groups with server-enforced admin permissions and the info
+> screens; status with its composer, full-screen viewer and 24-hour lifetime. Phases 7-8 in
 > [PLAN.md](PLAN.md).
 
 ## Stack

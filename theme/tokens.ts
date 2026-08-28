@@ -69,6 +69,14 @@ export type MessagingColors = {
    * is derived from the sender id so one person keeps one colour everywhere.
    */
   senderTints: string[];
+  /** The 2px ring around a status avatar: accent when unseen, grey once viewed. */
+  statusRing: string;
+  statusRingViewed: string;
+  /** Backgrounds a text-only status cycles through. */
+  statusBackgrounds: string[];
+  /** Chrome drawn over a full-screen status: always light, whatever the theme. */
+  statusOverlay: string;
+  onStatusOverlay: string;
 };
 
 const tideLight: TideColors = {
@@ -176,6 +184,12 @@ const messagingLight: MessagingColors = {
   // The first three are the reference's own group-name colours (on-*-container);
   // the rest extend the ring at the same darkness so no sender reads louder.
   senderTints: ['#005773', '#005426', '#93000a', '#6d4c00', '#5b3fa0', '#00629b', '#8a3324', '#004d40'],
+  statusRing: '#25D366',
+  statusRingViewed: '#bbcbb9',
+  // Saturated enough that white type sits on them at full contrast.
+  statusBackgrounds: ['#0F7A4A', '#075E54', '#8E44AD', '#C0392B', '#1F3A93', '#B7791F', '#2C3E50', '#16A085'],
+  statusOverlay: 'rgba(0,0,0,0.45)',
+  onStatusOverlay: '#FFFFFF',
 };
 
 const messagingDark: MessagingColors = {
@@ -194,6 +208,12 @@ const messagingDark: MessagingColors = {
   separator: '#232D36',
   link: '#53BDEB',
   senderTints: ['#c0e8ff', '#6efe98', '#ffdad6', '#ffd699', '#d0bcff', '#9ecaff', '#ffb59d', '#70efde'],
+  statusRing: '#25D366',
+  statusRingViewed: '#3c4a3d',
+  // A status is always shown full-bleed on black, so the same set works in both.
+  statusBackgrounds: ['#0F7A4A', '#075E54', '#8E44AD', '#C0392B', '#1F3A93', '#B7791F', '#2C3E50', '#16A085'],
+  statusOverlay: 'rgba(0,0,0,0.45)',
+  onStatusOverlay: '#FFFFFF',
 };
 
 export type Palette = { tide: TideColors; messaging: MessagingColors };
@@ -256,6 +276,11 @@ export const spacing = {
   /** The collapsing hero on a contact / group info screen. */
   heroHeight: 220,
   heroCollapsedHeight: 60,
+  /** The status ring's stroke, and the gap it leaves around the avatar. */
+  statusRingWidth: 2,
+  statusRingGap: 3,
+  /** The segmented progress bar at the top of the status viewer. */
+  statusProgressHeight: 3,
 } as const;
 
 export const radii = {

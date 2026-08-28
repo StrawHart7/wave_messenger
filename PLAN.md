@@ -181,6 +181,36 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** a status is posted, seen by the second account, appears in the viewer list, and disappears after expiry.
 
+> **Code complete, verification outstanding.** Passes `npm run verify` (178 tests, 30 new: ring
+> grouping, expiry, segment timing and the tap-advance state machine). The two-account exit
+> criterion still needs the live Supabase project phase 2 owes.
+>
+> One more hole in 0001, closed in `0004_status.sql`: the `status_views` insert policy checked
+> only `viewer_id = auth.uid()`, so any authenticated user could insert a view row for an
+> arbitrary status id. Harmless to read, but it puts a stranger's name in an author's viewer
+> list — which is exactly the thing a viewer list must never say.
+>
+> Decisions:
+> - **Expiry is enforced in both places, deliberately.** The read policy filters
+>   `expires_at > now()`, which makes an expired post unreadable; the client filter makes it
+>   vanish from a screen already open. A client-only rule is a suggestion; a server-only rule
+>   leaves a dead status on screen until the next fetch.
+> - **The sweep is housekeeping, not correctness.** `delete_expired_status()` runs hourly under
+>   pg_cron, and the migration schedules it only when the extension is enabled rather than
+>   failing on a fresh project. Storage objects are left orphaned; sweeping the bucket is a
+>   scheduled Edge Function's job, and is noted as owed.
+> - **Upload precedes the row, as with media.** Inserting first would publish a status pointing
+>   at an object that does not exist, and every contact who opened it in that window would see a
+>   black screen with no way to recover.
+> - **A status has no outbox.** A failed post is marked failed and left alone: a status that
+>   arrives an hour late is one you would rather re-shoot than have appear.
+> - **Replies quote the status as text**, not as a `reply_to_id`. A status is not a message, and
+>   the quote has to outlive the 24 hours.
+> - Segment progress is a Reanimated shared value; ticking React state instead would re-render
+>   the video surface every frame to move a 3px bar.
+> - The ring is drawn continuous, not segmented per post. Instagram segments it; WhatsApp does
+>   not, and arcs around a 48px circle are hairlines nobody can read.
+
 ## Phase 7 — Calls
 
 - WebRTC peer connection, signalling over a Supabase Realtime channel (offer/answer/ICE), TURN configured.

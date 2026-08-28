@@ -7,7 +7,7 @@
  * locally before the server has ever seen it.
  */
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const MIGRATIONS: string[] = [
   // v1 — chats, messages, receipts and the local profile cache.
@@ -124,5 +124,38 @@ export const MIGRATIONS: string[] = [
 
   alter table profiles add column phone text;
   alter table chat_members add column joined_at integer not null default 0;
+  `,
+
+  // v4 — status. Expiry is stored as an absolute deadline rather than a TTL so a
+  // device whose clock is wrong is wrong once, not compounding on every read.
+  `
+  create table if not exists status_posts (
+    id text primary key,
+    author_id text not null,
+    kind text not null,
+    storage_path text,
+    caption text,
+    background_color text,
+    created_at integer not null,
+    expires_at integer not null,
+    duration_ms integer,
+    -- Whether *this* device's owner has seen it; a single-user database, so one column.
+    viewed integer not null default 0,
+    local_uri text,
+    -- pending | sent | failed, mirroring the message outbox.
+    state text not null default 'sent'
+  );
+
+  create index if not exists status_posts_author_idx on status_posts (author_id, created_at desc);
+  create index if not exists status_posts_expiry_idx on status_posts (expires_at);
+
+  -- Only ever populated for the viewer's own posts: nobody else's viewer list is
+  -- readable, so caching one would just be caching an empty set.
+  create table if not exists status_views (
+    status_id text not null,
+    viewer_id text not null,
+    viewed_at integer not null,
+    primary key (status_id, viewer_id)
+  );
   `,
 ];

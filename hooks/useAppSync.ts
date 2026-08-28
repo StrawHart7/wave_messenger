@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 
 import { subscribeToMembership } from '../services/realtime/membership';
 import { subscribeToMessages } from '../services/realtime/messages';
+import { subscribeToStatus } from '../services/realtime/status';
 import { pullChats } from '../services/sync/bootstrap';
 import { resumeOutbox } from '../services/sync/outbox';
+import { pullStatus } from '../services/statusSync';
 import { useSession } from '../stores/session';
 
 /**
@@ -23,14 +25,17 @@ export function useAppSync(): void {
 
     // Catch up on what happened while the app was closed, then stay subscribed.
     void pullChats(viewerId).catch(() => {});
+    void pullStatus(viewerId).catch(() => {});
     resumeOutbox(viewerId);
 
     const stopMessages = subscribeToMessages(viewerId);
     const stopMembership = subscribeToMembership(viewerId);
+    const stopStatus = subscribeToStatus(viewerId);
 
     return () => {
       stopMessages();
       stopMembership();
+      stopStatus();
     };
   }, [status, viewerId]);
 }
