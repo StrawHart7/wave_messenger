@@ -1,63 +1,136 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
-import { messageTime } from '../../services/grouping';
-import type { RunPosition } from '../../services/grouping';
+import type { Attachment } from '../../services/attachments';
+import { messageTime, type RunPosition } from '../../services/grouping';
 import { showsTicks, type LocalMessage } from '../../services/messageState';
+import type { ReactionPill } from '../../services/reactions';
 import { useTheme } from '../../theme/ThemeProvider';
 import { Text } from '../ui/Text';
 import { Ticks } from '../ui/Ticks';
+import { DocumentAttachment, MediaAttachment } from './MediaBubble';
+import { VoiceNote } from './VoiceNoteBubble';
+
+export type BubbleProps = {
+  message: LocalMessage;
+  viewerId: string;
+  position: RunPosition;
+  tail: boolean;
+  senderName?: string | null;
+  attachment?: Attachment | null;
+  /** Signed URL for a remote attachment; null while it is still resolving. */
+  attachmentUri?: string | null;
+  reactions?: ReactionPill[];
+  /** The quoted message this one replies to, already resolved. */
+  replyTo?: { senderName: string; preview: string } | null;
+  maxMediaWidth?: number;
+  onLongPress?: () => void;
+  onPressReaction?: () => void;
+};
 
 /**
- * A message bubble.
+ * A message bubble, in every kind it can take.
  *
- * The tail sits at the *top* outer corner (top-right outgoing, top-left incoming),
- * drawn as a clipped triangle — that is what the reference does, and it is why the
- * first bubble of a run looks anchored while the rest float.
+ * The tail sits at the *top* outer corner (top-right outgoing, top-left incoming) —
+ * that is what the reference does, and it is why the first bubble of a run looks
+ * anchored while the rest float.
  */
 export function Bubble({
   message,
   viewerId,
   position,
-  senderName,
   tail,
-}: {
-  message: LocalMessage;
-  viewerId: string;
-  position: RunPosition;
-  /** Group chats colour and label the sender above the first bubble of a run. */
-  senderName?: string | null;
-  tail: boolean;
-}) {
+  senderName,
+  attachment,
+  attachmentUri,
+  reactions = [],
+  replyTo,
+  maxMediaWidth = 260,
+  onLongPress,
+  onPressReaction,
+}: BubbleProps) {
   const { colors, radii, spacing } = useTheme();
   const outgoing = message.senderId === viewerId;
 
   const background = outgoing ? colors.messaging.bubbleOutgoing : colors.messaging.bubbleIncoming;
   const showsSender = Boolean(senderName) && !outgoing && (position === 'first' || position === 'single');
+  const isMedia = message.kind === 'image' || message.kind === 'video' || message.kind === 'sticker';
+  const hasText = Boolean(message.body) && !message.deletedAt;
 
   return (
     <View
       style={{
         flexDirection: 'row',
         justifyContent: outgoing ? 'flex-end' : 'flex-start',
-        marginBottom: position === 'last' || position === 'single' ? spacing.stackSm : spacing.stackXs,
+        marginBottom:
+          reactions.length > 0
+            ? spacing.edgeMargin
+            : position === 'last' || position === 'single'
+              ? spacing.stackSm
+              : spacing.stackXs,
         paddingHorizontal: spacing.stackSm,
       }}
     >
-      <View
+      <Pressable
+        onLongPress={onLongPress}
+        delayLongPress={250}
         style={{
           maxWidth: `${spacing.bubbleMaxWidthRatio * 100}%`,
           backgroundColor: background,
           borderRadius: radii.bubble,
           borderTopRightRadius: outgoing && tail ? radii.bubbleTail : radii.bubble,
           borderTopLeftRadius: !outgoing && tail ? radii.bubbleTail : radii.bubble,
-          paddingHorizontal: spacing.stackMd,
-          paddingVertical: spacing.stackSm,
+          // Media sits flush inside a 3px frame; text bubbles get real padding.
+          padding: isMedia ? 3 : undefined,
+          paddingHorizontal: isMedia ? 3 : spacing.stackMd,
+          paddingVertical: isMedia ? 3 : spacing.stackSm,
         }}
       >
         {showsSender ? (
-          <Text variant="labelSm" tint={colors.tide.secondary} style={{ marginBottom: 2 }}>
+          <Text
+            variant="labelSm"
+            tint={colors.tide.secondary}
+            style={{ marginBottom: 2, paddingHorizontal: isMedia ? spacing.stackSm : 0 }}
+          >
             {senderName}
           </Text>
+        ) : null}
+
+        {replyTo ? (
+          <View
+            style={{
+              borderLeftWidth: 3,
+              borderLeftColor: colors.messaging.accent,
+              backgroundColor: colors.tide.surfaceContainer,
+              borderRadius: radii.md,
+              paddingHorizontal: spacing.stackSm,
+              paddingVertical: 6,
+              marginBottom: spacing.stackXs,
+            }}
+          >
+            <Text variant="labelSm" tint={colors.tide.secondary}>
+              {replyTo.senderName}
+            </Text>
+            <Text variant="bubbleMeta" tint={colors.messaging.meta} numberOfLines={1}>
+              {replyTo.preview}
+            </Text>
+          </View>
+        ) : null}
+
+        {attachment && isMedia ? (
+          <MediaAttachment
+            attachment={attachment}
+            uri={attachmentUri ?? null}
+            maxWidth={maxMediaWidth}
+            isVideo={message.kind === 'video'}
+          />
+        ) : null}
+
+        {attachment && message.kind === 'voice' ? (
+          <VoiceNote attachment={attachment} uri={attachment.localUri ?? attachmentUri ?? null} tint={colors.messaging.meta} />
+        ) : null}
+
+        {attachment && message.kind === 'document' ? (
+          <DocumentAttachment attachment={attachment} tint={colors.messaging.meta} />
         ) : null}
 
         {message.deletedAt ? (
@@ -68,11 +141,20 @@ export function Bubble({
           >
             This message was deleted
           </Text>
-        ) : (
-          <Text variant="bubbleBody" tint={colors.messaging.bubbleText} style={{ paddingRight: 56 }}>
+        ) : hasText ? (
+          <Text
+            variant="bubbleBody"
+            tint={colors.messaging.bubbleText}
+            style={{
+              paddingRight: 56,
+              paddingHorizontal: isMedia ? spacing.stackSm : 0,
+              paddingTop: isMedia ? 6 : 0,
+              paddingBottom: isMedia ? spacing.stackMd : 0,
+            }}
+          >
             {message.body}
           </Text>
-        )}
+        ) : null}
 
         {/* Timestamp and ticks overlap the last line's trailing padding, exactly as
             the reference does — a separate row would add 20px to every bubble. */}
@@ -84,15 +166,56 @@ export function Bubble({
             flexDirection: 'row',
             alignItems: 'center',
             gap: 2,
+            // Over an image the meta needs its own scrim to stay legible.
+            paddingHorizontal: isMedia && !hasText ? 6 : 0,
+            paddingVertical: isMedia && !hasText ? 2 : 0,
+            borderRadius: radii.md,
+            backgroundColor: isMedia && !hasText ? 'rgba(0,0,0,0.35)' : 'transparent',
           }}
         >
-          <Text variant="bubbleMeta" tint={colors.messaging.meta}>
+          <Text
+            variant="bubbleMeta"
+            tint={isMedia && !hasText ? colors.messaging.onAccent : colors.messaging.meta}
+          >
             {messageTime(message.createdAt)}
           </Text>
           {showsTicks(message, viewerId) ? (
             <Ticks state={message.state === 'failed' ? 'pending' : message.state} size={14} />
           ) : null}
         </View>
+
+        {reactions.length > 0 ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="See reactions"
+            onPress={onPressReaction}
+            style={{
+              position: 'absolute',
+              bottom: -14,
+              [outgoing ? 'right' : 'left']: spacing.stackMd,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 2,
+              paddingHorizontal: 6,
+              paddingVertical: 2,
+              borderRadius: radii.full,
+              backgroundColor: colors.tide.surfaceContainerLowest,
+              borderWidth: 1,
+              borderColor: colors.tide.outlineVariant,
+            }}
+          >
+            {reactions.slice(0, 3).map((pill) => (
+              <Text key={pill.emoji} variant="bubbleMeta" tint={colors.tide.onSurface} style={{ fontSize: 12 }}>
+                {pill.emoji}
+              </Text>
+            ))}
+            {reactions.reduce((sum, pill) => sum + pill.count, 0) > 1 ? (
+              <Text variant="bubbleMeta" tint={colors.messaging.meta}>
+                {reactions.reduce((sum, pill) => sum + pill.count, 0)}
+              </Text>
+            ) : null}
+          </Pressable>
+        ) : null}
 
         {tail ? (
           <View
@@ -112,7 +235,7 @@ export function Bubble({
             }}
           />
         ) : null}
-      </View>
+      </Pressable>
 
       {message.state === 'failed' ? (
         <Text variant="bubbleMeta" tint={colors.tide.error} style={{ alignSelf: 'flex-end', marginLeft: 4 }}>

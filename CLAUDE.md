@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-3 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime. Phase 4 (media, voice notes, reactions) is next — see `PLAN.md`.
+Wave Messenger — a WhatsApp-class mobile messenger (React Native + Expo + Supabase). **Phases 1-4 are in place**: Expo Router shell, theme system and UI primitives; Supabase schema with RLS, phone-OTP auth and onboarding; the SQLite store, chat list, conversation, outbox and realtime; media, voice notes, reactions, replies and the attachment sheet. Phase 5 (groups) is next — see `PLAN.md`.
 
 Read before doing anything:
 
@@ -46,14 +46,17 @@ app/                 _layout.tsx (fonts, providers, AuthGate)
   chat/[id].tsx      conversation
 components/ui/       Text, Avatar, Badge, Pill, ListRow, Ticks, TextField, OtpInput, Screen
 components/auth/     AuthGate (routing guard), CountryPicker
-components/chat/     Bubble, ChatChip, UnreadDivider, ChatRow, Composer
-db/                  schema.ts, client.ts (connection + revision), chats.ts, messages.ts
-hooks/               useLiveQuery, useChats, useMessages
+components/chat/     Bubble, ChatRow, Composer, MediaBubble, VoiceNoteBubble,
+                     VoiceRecorder, AttachmentSheet, MessageActions, SwipeToReply
+db/                  schema.ts, client.ts (connection + revision), chats.ts, messages.ts,
+                     attachments.ts (attachments + reactions)
+hooks/               useLiveQuery, useChats, useConversation, useVoiceRecorder
 theme/               tokens.ts, fontFamilies.ts, fonts.ts, ThemeProvider.tsx
 services/            storage, supabase, auth, phone, contacts (pure), contactSync,
-                     media, messageState, grouping, chatList
+                     media, messageState, grouping, chatList, attachments, waveform,
+                     reactions
 services/realtime/   messages.ts (postgres_changes), presence.ts (typing + presence)
-services/sync/       outbox.ts
+services/sync/       outbox.ts (text), uploads.ts (media)
 stores/              session.ts (Zustand)
 supabase/migrations/ 0001_init.sql (schema + RLS), 0002_storage.sql (buckets + policies)
 ```
@@ -83,6 +86,13 @@ Conventions worth knowing before writing code here:
 - **FlashList v2 has no `inverted` and no `estimatedItemSize`.** Chat lists render chronologically
   with `maintainVisibleContentPosition.startRenderingFromBottom` and load older messages through
   `onStartReached`.
+- **Media uploads before the message is enqueued** (`services/sync/uploads.ts`). A message row
+  with no object behind it renders as a broken bubble on the other device and cannot be repaired.
+- Per-page joins, never per-bubble queries: `useConversation` fetches attachments and reactions
+  for the whole page in two queries and joins them in memory.
+- The `react-hooks` lint rules are strict here and usually right: no `setState` inside an effect
+  body, no `Date.now()` or ref reads during render. When one fires, the fix is a better design
+  (submit from the event handler, read duration from the recorder) rather than a disable comment.
 
 ## Stack (fixed — do not substitute)
 

@@ -7,7 +7,7 @@
  * locally before the server has ever seen it.
  */
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const MIGRATIONS: string[] = [
   // v1 — chats, messages, receipts and the local profile cache.
@@ -76,5 +76,41 @@ export const MIGRATIONS: string[] = [
     key text primary key,
     value text
   );
+  `,
+
+  // v2 — attachments and reactions.
+  `
+  create table if not exists attachments (
+    id text primary key,
+    message_client_id text not null,
+    message_id text,
+    chat_id text not null,
+    storage_path text not null,
+    thumbnail_path text,
+    mime_type text not null,
+    byte_size integer not null default 0,
+    width integer,
+    height integer,
+    duration_ms integer,
+    -- JSON array of 0-100 amplitudes; SQLite has no array type and a voice note
+    -- carries exactly one waveform, so a column beats a side table here.
+    waveform text,
+    -- file:// URI while the upload is in flight, so the bubble renders immediately.
+    local_uri text,
+    upload_progress real not null default 0
+  );
+
+  create index if not exists attachments_message_idx on attachments (message_client_id);
+
+  create table if not exists reactions (
+    message_id text not null,
+    user_id text not null,
+    emoji text not null,
+    created_at integer not null,
+    -- One reaction per person per message, mirroring the Postgres primary key.
+    primary key (message_id, user_id)
+  );
+
+  create index if not exists reactions_message_idx on reactions (message_id);
   `,
 ];

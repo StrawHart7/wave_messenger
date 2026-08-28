@@ -30,7 +30,10 @@
       "expo-router",
       "expo-font",
       "expo-splash-screen",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-image",
+      "expo-audio",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

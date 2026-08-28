@@ -114,6 +114,18 @@ persists a preference, tab bar and app bar built from tokens.
 
 **Exit:** every bubble type renders correctly in both themes; a 12 MB video and a 45s voice note both send, upload with visible progress, and play back on the other device.
 
+> **Code complete, verification outstanding.** Passes `npm run verify` (117 tests, 42 new:
+> waveform maths, reaction aggregation and the attachment rules). Playback, recording and upload
+> progress need a device — none of it has run yet.
+>
+> Notes:
+> - Reply-swipe landed here as planned, sharing gesture handling with the long-press action
+>   sheet. `activeOffsetX` is what lets it coexist with the vertical list.
+> - Waveforms are collected from the recorder's metering during capture, not analysed from the
+>   finished file — that would mean an audio-analysis dependency to compute 14 numbers.
+> - Contact, location and poll attachments are stubbed with a notice; they need pickers that
+>   belong with the group work in phase 5.
+
 ## Phase 5 — Groups
 
 - Group creation flow (member picker with chips, subject, icon).

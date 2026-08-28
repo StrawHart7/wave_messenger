@@ -2,9 +2,9 @@
 
 A production-grade mobile messenger (WhatsApp-class UX) built with React Native + Expo.
 
-> Status: **Phases 1-3** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
-> and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime.
-> Phases 4-8 in [PLAN.md](PLAN.md).
+> Status: **Phases 1-4** — theme system and primitives; Supabase schema with RLS, phone-OTP auth
+> and onboarding; SQLite store, chat list, conversation, optimistic outbox and realtime; media,
+> voice notes, reactions and replies. Phases 5-8 in [PLAN.md](PLAN.md).
 
 ## Stack
 
@@ -22,12 +22,13 @@ A production-grade mobile messenger (WhatsApp-class UX) built with React Native 
 
 ```
 app/                Expo Router — (auth)/, (tabs)/, chat/[id]
-components/         ui/ primitives, auth/, chat/ (bubbles, rows, composer)
+components/         ui/ primitives, auth/, chat/ (bubbles, media, recorder, sheets)
 db/                 SQLite: schema, connection, chat and message queries
-hooks/              useLiveQuery (SQLite -> React), useChats, useMessages
+hooks/              useLiveQuery (SQLite -> React), useChats, useConversation,
+                    useVoiceRecorder
 theme/              tokens.ts (mirrors DESIGN.md), fonts.ts, ThemeProvider
-services/           supabase, auth, phone, contacts, media, storage seam,
-                    messageState, grouping, chatList, realtime/, sync/
+services/           supabase, auth, phone, contacts, media, storage seam, messageState,
+                    grouping, chatList, attachments, waveform, reactions, realtime/, sync/
 stores/             session (Zustand)
 supabase/migrations/  schema + RLS, storage buckets + policies
 PLAN.md             8 phases, exit criteria per phase, risk register
